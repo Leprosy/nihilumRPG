@@ -1,16 +1,6 @@
-# phaser-project-ts
-A basic game project template using TS-Parcel-Phaser
+# Nihilum RPG
 
-This includes:
-* `typescript` for coding.
-* `eslint` for style and format.
-* `jest` for testing and coverage.
-* `husky` for commit hooks.
-* `parcel` to do the live server, transpiling of the code and building.
-* `Phaser.JS` as the main game engine.
-
-# Usage
-Just clone the damn thing, run `npm install` and start hacking 😊
+An RPG game in Typescript
 
 # Scripts
 
