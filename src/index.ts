@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { enable3d, Canvas } from "@enable3d/phaser-extension";
 import { Main, Stage } from "./scenes/";
 
 class SimpleGame {
@@ -6,16 +7,25 @@ class SimpleGame {
 
   constructor() {
     const config: Phaser.Types.Core.GameConfig = {
-      width: 800,
+      type: Phaser.WEBGL,
+      transparent: true,
+      scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+        width: window.innerWidth * Math.max(1, window.devicePixelRatio / 2),
+        height: window.innerHeight * Math.max(1, window.devicePixelRatio / 2)
+      },
+      /* width: 800,
       height: 600,
-      type: Phaser.AUTO,
+      type: Phaser.WEBGL, */
       parent: "content",
       scene: [Main, Stage],
       title: "A Game",
       version: "0.1",
+      ...Canvas()
     };
 
-    this.game = new Phaser.Game(config);
+    enable3d(() => new Phaser.Game(config));
   }
 }
 
