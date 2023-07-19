@@ -16,9 +16,30 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "@typescript-eslint/no-explicit-any": "warn",
+        "block-spacing": [
+            "warn",
+            "always"
+        ],
+        "arrow-spacing": "warn",
+        "no-unused-expressions": "warn",
+        "space-infix-ops": "warn",
+        "semi-spacing": "warn",
+        "keyword-spacing": "warn",
+        "comma-spacing": "warn",
+        "no-trailing-spaces": "warn",
+        "key-spacing": "warn",
+        "object-curly-spacing": [
+            "warn",
+            "always"
+        ],
+        "prefer-template": "error",
         "indent": [
             "warn",
-            2
+            2,
+            {
+                "SwitchCase": 1
+            }
         ],
         "linebreak-style": [
             "error",

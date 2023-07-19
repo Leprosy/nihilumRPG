@@ -27,10 +27,9 @@ class Party {
   private checkBoundaries(x:number, y:number, map: Dungeon) {
     console.log({ x, y });
 
-    if (x < 0) return;
-    if (y < 0) return;
-    if (x === map.getWidth()) return;
-    if (y === map.getHeight()) return;
+    if (x < 0 || y < 0) return;
+    if (x === map.getWidth() || y === map.getHeight()) return;
+    if (!map.isPassable(x, y)) return;
 
     console.log("we are ok");
 
