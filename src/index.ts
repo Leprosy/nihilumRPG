@@ -15,9 +15,6 @@ class SimpleGame {
         width: window.innerWidth * Math.max(1, window.devicePixelRatio / 2),
         height: window.innerHeight * Math.max(1, window.devicePixelRatio / 2)
       },
-      /* width: 800,
-      height: 600,
-      type: Phaser.WEBGL, */
       parent: "content",
       scene: [Main, Stage],
       title: "A Game",
