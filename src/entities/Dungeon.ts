@@ -30,6 +30,13 @@ export class Dungeon {
       [0, 0, 0, 3, 0],
       [0, 0, 0, 0, 0]
     ];
+
+    this.script = {
+      "0x4": [
+        { key: "value" },
+        { otherKey: "fuck" }
+      ]
+    };
   }
 
   getWidth() {
@@ -43,6 +50,10 @@ export class Dungeon {
   isPassable(x: number, y: number) {
     return this.objects[y][x] === 0;
   }
+
+
+
+
 
   debugShowMap(px, py, a) {
     let map = "";

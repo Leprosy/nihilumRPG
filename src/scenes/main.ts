@@ -50,7 +50,7 @@ export class Main extends Phaser.Scene {
   update() {
     if (this.keys["space"].isDown) {
       console.log("Space pressed on Main");
-      this.scene.start("Stage");
+      this.scene.start("Load");
     }
 
     if (this.keys["a"].isDown) {
