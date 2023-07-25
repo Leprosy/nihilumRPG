@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { enable3d, Canvas } from "@enable3d/phaser-extension";
-import { Main, Stage, Load } from "./scenes/";
+import { Main, Explore, Load } from "./scenes/";
 
 class SimpleGame {
   game: Phaser.Game;
@@ -16,7 +16,7 @@ class SimpleGame {
         height: window.innerHeight * Math.max(1, window.devicePixelRatio / 2)
       },
       parent: "content",
-      scene: [Main, Stage, Load],
+      scene: [Main, Explore, Load],
       title: "A Game",
       version: "0.1",
       ...Canvas()
