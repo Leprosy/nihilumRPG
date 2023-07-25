@@ -1,13 +1,5 @@
-type Script = {
-  inmediate: boolean;
-  code: ScriptInstruction[];
-  pointer: number;
-}
+import { Script } from "../types";
 
-type ScriptInstruction = {
-  instruction: "display" | "prompt" | "confirm";
-  data: any
-}
 
 export class Dungeon {
   name: string;
@@ -24,7 +16,7 @@ export class Dungeon {
       [1, 1, 1, 1, 1],
       [1, 1, 1, 1, 2],
       [1, 1, 1, 2, 3],
-      [1, 1, 2, 3, 4],];
+      [4, 1, 2, 3, 1],];
 
     this.ceilings = [
       [1, 1, 1, 1, 1],
@@ -44,8 +36,11 @@ export class Dungeon {
     this.scripts = {
       "0x4": {
         inmediate: true,
-        code: [{ "display": "Hello world!" }],
-        pointer: 0
+        code: [
+          { instruction: "display", data: "Hello world!" },
+          { instruction: "display", data: "Last instruction" },
+          { instruction: "confirm", data: "Are you ready?" }
+        ],
       }
     };
   }
@@ -62,7 +57,9 @@ export class Dungeon {
     return this.objects[y][x] === 0;
   }
 
-
+  getScript(x: number, y: number): Script {
+    return this.scripts[`${x}x${y}`];
+  }
 
 
 
@@ -75,7 +72,7 @@ export class Dungeon {
         if (px === x && py === y) {
           map += char;
         } else {
-          map += this.objects[y][x];
+          map += this.floors[y][x];
         }
       }
 
