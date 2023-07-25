@@ -1,11 +1,21 @@
+type Script = {
+  inmediate: boolean;
+  code: ScriptInstruction[];
+  pointer: number;
+}
+
+type ScriptInstruction = {
+  instruction: "display" | "prompt" | "confirm";
+  data: any
+}
+
 export class Dungeon {
   name: string;
 
   floors: number[][];
   ceilings: number[][];
   objects: number[][];
-
-  script: any;
+  scripts: Record<string, Script>;
 
   constructor() {
     this.name = "Test map";
@@ -31,11 +41,12 @@ export class Dungeon {
       [0, 0, 0, 0, 0]
     ];
 
-    this.script = {
-      "0x4": [
-        { key: "value" },
-        { otherKey: "fuck" }
-      ]
+    this.scripts = {
+      "0x4": {
+        inmediate: true,
+        code: [{ "display": "Hello world!" }],
+        pointer: 0
+      }
     };
   }
 

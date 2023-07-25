@@ -1,12 +1,12 @@
 import { Scene3D } from "@enable3d/phaser-extension";
 import { GameState } from "../types";
 
-export class Stage extends Scene3D {
+export class Explore extends Scene3D {
   state: GameState;
   text: Phaser.GameObjects.BitmapText;
 
   constructor() {
-    super("Stage");
+    super("Explore");
   }
 
   init() {
