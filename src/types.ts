@@ -9,7 +9,7 @@ export type GameState = {
 export enum ExplorationStatus {
   Exploring,
   Script,
-  ScriptConfirm,
+  ScriptChoice,
   ScriptPrompt
 }
 
@@ -19,6 +19,6 @@ export type Script = {
 }
 
 export type ScriptInstruction = {
-  instruction: "display" | "prompt" | "confirm";
-  data: any
+  command: "display" | "prompt" | "choice" | "setPointer" | "endScript" | "comment";
+  data?: any
 }

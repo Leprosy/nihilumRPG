@@ -4,14 +4,18 @@ import { ExplorationStatus, GameState, Script } from "../types";
 export class Explore extends Scene3D {
   state: GameState;
   text: Phaser.GameObjects.BitmapText;
+
   currentStatus: ExplorationStatus;
+
   script: Script;
   pointer: number;
+  lastKey: string;
 
   constructor() {
     super("Explore");
     this.currentStatus = ExplorationStatus.Exploring;
     this.pointer = 0;
+    this.lastKey = "";
   }
 
   init() {
@@ -26,12 +30,15 @@ export class Explore extends Scene3D {
 
     // Key events
     this.input.keyboard.on("keydown", event => {
+      this.lastKey = event.key;
+
       switch (this.currentStatus) {
         case ExplorationStatus.Exploring:
           this.moveParty(event);
           break;
 
         case ExplorationStatus.Script:
+        case ExplorationStatus.ScriptChoice:
           this.runScript();
           break;
       }
@@ -80,14 +87,45 @@ export class Explore extends Scene3D {
   }
 
   runScript() {
-    const instruction = this.script.code[this.pointer];
-    console.log("Running", instruction);
-    this.pointer++;
+    const line = this.script.code[this.pointer];
+    console.log("Running", line);
+    const call = this[`command_${  line.command}`].bind(this);
+
+    try {
+      call(line.data);
+    } catch (e) {
+      console.error("Command not found", e, line);
+    }
 
     if (this.pointer >= this.script.code.length) {
       console.log("Script ended");
       this.pointer = 0;
       this.currentStatus = ExplorationStatus.Exploring;
+    }
+  }
+
+  command_display(data: any) {
+    console.log("commandDisplay", data);
+    this.pointer++;
+  }
+
+  command_endScript() {
+    console.log("commandEndScript");
+    this.pointer = this.script.code.length;
+  }
+
+  command_choice(data: any) {
+    if (this.currentStatus != ExplorationStatus.ScriptChoice) {
+      this.currentStatus = ExplorationStatus.ScriptChoice;
+      console.log("commandChoice", data);
+    } else {
+      const option = data.options[this.lastKey];
+
+      if (option) {
+        this.pointer = option;
+        this.currentStatus = ExplorationStatus.Script;
+        this.runScript();
+      }
     }
   }
 

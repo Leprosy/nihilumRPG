@@ -16,7 +16,7 @@ export class Dungeon {
       [1, 1, 1, 1, 1],
       [1, 1, 1, 1, 2],
       [1, 1, 1, 2, 3],
-      [4, 1, 2, 3, 1],];
+      [4, 1, 2, 3, 4],];
 
     this.ceilings = [
       [1, 1, 1, 1, 1],
@@ -37,9 +37,18 @@ export class Dungeon {
       "0x4": {
         inmediate: true,
         code: [
-          { instruction: "display", data: "Hello world!" },
-          { instruction: "display", data: "Last instruction" },
-          { instruction: "confirm", data: "Are you ready?" }
+          { command: "display", data: "Hello world!" },
+        ],
+      },
+      "4x4": {
+        inmediate: true,
+        code: [
+          { command: "display", data: "This is a message" },
+          { command: "display", data: "Answer" },
+          { command: "choice", data: { text: "Are you ready?", options: { y: 3, n: 5 } } },
+          { command: "display", data: "You are not ready" },
+          { command: "endScript" },
+          { command: "display", data: "You are indeed ready...great" },
         ],
       }
     };
@@ -78,7 +87,7 @@ export class Dungeon {
 
       map += "\n";
     }
-    console.log(map);
+    //console.log(map);
     return map;
   }
 }
