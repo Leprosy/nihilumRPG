@@ -45,7 +45,7 @@ export class Dungeon {
         code: [
           { command: "display", data: "This is a message" },
           { command: "display", data: "Answer" },
-          { command: "choice", data: { text: "Are you ready?", options: { y: 3, n: 5 } } },
+          { command: "choice", data: { text: "Are you ready?", options: { n: 3, y: 5 } } },
           { command: "display", data: "You are not ready" },
           { command: "endScript" },
           { command: "display", data: "You are indeed ready...great" },

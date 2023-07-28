@@ -1,5 +1,6 @@
 import { Scene3D } from "@enable3d/phaser-extension";
 import { ExplorationStatus, GameState, Script } from "../types";
+import { CommandRunner } from "../helpers/CommandRunner";
 
 export class Explore extends Scene3D {
   state: GameState;
@@ -10,12 +11,14 @@ export class Explore extends Scene3D {
   script: Script;
   pointer: number;
   lastKey: string;
+  runner: CommandRunner;
 
   constructor() {
     super("Explore");
     this.currentStatus = ExplorationStatus.Exploring;
     this.pointer = 0;
     this.lastKey = "";
+    this.runner = new CommandRunner(this);
   }
 
   init() {
@@ -89,10 +92,9 @@ export class Explore extends Scene3D {
   runScript() {
     const line = this.script.code[this.pointer];
     console.log("Running", line);
-    const call = this[`command_${  line.command}`].bind(this);
 
     try {
-      call(line.data);
+      this.runner[line.command](line.data);
     } catch (e) {
       console.error("Command not found", e, line);
     }
@@ -104,31 +106,5 @@ export class Explore extends Scene3D {
     }
   }
 
-  command_display(data: any) {
-    console.log("commandDisplay", data);
-    this.pointer++;
-  }
-
-  command_endScript() {
-    console.log("commandEndScript");
-    this.pointer = this.script.code.length;
-  }
-
-  command_choice(data: any) {
-    if (this.currentStatus != ExplorationStatus.ScriptChoice) {
-      this.currentStatus = ExplorationStatus.ScriptChoice;
-      console.log("commandChoice", data);
-    } else {
-      const option = data.options[this.lastKey];
-
-      if (option) {
-        this.pointer = option;
-        this.currentStatus = ExplorationStatus.Script;
-        this.runScript();
-      }
-    }
-  }
-
-  update() {
-  }
+  update() {}
 }
