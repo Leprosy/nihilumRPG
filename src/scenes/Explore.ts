@@ -47,13 +47,32 @@ export class Explore extends Scene3D {
       }
     });
 
-    // 3d
-    const textures = this.registry.get("textures");
-    console.log(textures);
 
+
+    // 3d scene
+    const textures = this.registry.get("textures");
     this.third.warpSpeed("-ground", "-sky");
-    this.third.add.box({ x: 1, y: 2, height: 0.5, width: 4, depth: 4 }, { lambert: { map: textures[0] } });
-    // const object = this.third.add.mesh({});
+
+    for (let x = 0; x < this.state.map.getWidth(); x++) {
+      for (let y = 0; y < this.state.map.getHeight(); ++y) {
+        const floor = this.state.map.floors[x][y];
+        const ceiling = this.state.map.ceilings[x][y];
+
+        if (floor !== 0){
+          this.third.add.box(
+            { x: x * 4, y: 0, z: y * 4, height: 0.5, width: 4, depth: 4 },
+            { lambert: { map: textures.floor[floor - 1] } });
+        }
+
+        if (ceiling !== 0){
+          this.third.add.box(
+            { x: x * 4, y: 4, z: y * 4, height: 0.5, width: 4, depth: 4 },
+            { lambert: { map: textures.ceiling[ceiling - 1] } });
+        }
+      }
+    }
+
+    this.third.add.box({ x: 0, y: 2, height: 4, width: 4, depth: 4 }, { lambert: { map: textures.wall[0] } });
   }
 
   moveParty(event) {
