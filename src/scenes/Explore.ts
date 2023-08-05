@@ -27,7 +27,7 @@ export class Explore extends Scene3D {
 
   preload() {}
 
-  create() {
+  async create() {
     this.state = this.registry.get("state");
     this.text = this.add.bitmapText(400, 200, "font", `oaw${  this.game.config.gameTitle}`).setOrigin(0.5).setTint(0x222222);
 
@@ -48,8 +48,12 @@ export class Explore extends Scene3D {
     });
 
     // 3d
-    this.third.warpSpeed();
-    this.third.add.box({ x: 1, y: 2 });
+    const textures = this.registry.get("textures");
+    console.log(textures);
+
+    this.third.warpSpeed("-ground", "-sky");
+    this.third.add.box({ x: 1, y: 2, height: 0.5, width: 4, depth: 4 }, { lambert: { map: textures[0] } });
+    // const object = this.third.add.mesh({});
   }
 
   moveParty(event) {
