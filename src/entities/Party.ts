@@ -39,15 +39,20 @@ export class Party {
     };
   }
 
+  getBackward() {
+    return {
+      x: this.x - Math.round(Math.sin(this.a * Math.PI / 2)),
+      y: this.y - Math.round(Math.cos(this.a * Math.PI / 2))
+    };
+  }
+
   forward(map: Dungeon) {
-    const newx = this.x + Math.round(Math.sin(this.a * Math.PI / 2));
-    const newy = this.y + Math.round(Math.cos(this.a * Math.PI / 2));
-    this.checkBoundaries(newx, newy, map);
+    const forward = this.getForward();
+    this.checkBoundaries(forward.x, forward.y, map);
   }
 
   backward(map: Dungeon) {
-    const newx = this.x - Math.round(Math.sin(this.a * Math.PI / 2));
-    const newy = this.y - Math.round(Math.cos(this.a * Math.PI / 2));
-    this.checkBoundaries(newx, newy, map);
+    const backward = this.getBackward();
+    this.checkBoundaries(backward.x, backward.y, map);
   }
 }
