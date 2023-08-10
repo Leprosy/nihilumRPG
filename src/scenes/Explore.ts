@@ -2,6 +2,8 @@ import { Scene3D } from "@enable3d/phaser-extension";
 import { ExplorationStatus, GameState, Script } from "../types";
 import { CommandRunner } from "../helpers/CommandRunner";
 
+const GRID = 10;
+
 export class Explore extends Scene3D {
   state: GameState;
   text: Phaser.GameObjects.BitmapText;
@@ -27,7 +29,7 @@ export class Explore extends Scene3D {
 
   preload() {}
 
-  async create() {
+  create() {
     this.state = this.registry.get("state");
     this.text = this.add.bitmapText(400, 200, "font", `oaw${  this.game.config.gameTitle}`).setOrigin(0.5).setTint(0x222222);
 
@@ -47,6 +49,10 @@ export class Explore extends Scene3D {
       }
     });
 
+    //DEBUG
+    window.cam = this.third.camera;
+    window.party = this.state.party;
+
 
 
     // 3d scene
@@ -57,22 +63,37 @@ export class Explore extends Scene3D {
       for (let y = 0; y < this.state.map.getHeight(); ++y) {
         const floor = this.state.map.floors[x][y];
         const ceiling = this.state.map.ceilings[x][y];
+        const object = this.state.map.objects[x][y];
+        const wall = this.state.map.walls[x][y];
 
         if (floor !== 0){
           this.third.add.box(
-            { x: x * 4, y: 0, z: y * 4, height: 0.5, width: 4, depth: 4 },
+            { x: x * GRID, y: 0, z: y * GRID, height: GRID / 10, width: GRID, depth: GRID },
             { lambert: { map: textures.floor[floor - 1] } });
         }
 
         if (ceiling !== 0){
           this.third.add.box(
-            { x: x * 4, y: 4, z: y * 4, height: 0.5, width: 4, depth: 4 },
-            { lambert: { map: textures.ceiling[ceiling - 1] } });
+            { x: x * GRID, y: GRID, z: y * GRID, height: GRID / 10, width: GRID, depth: GRID },
+            { lambert: { map: textures.ceiling[ceiling - 1], transparent: true, opacity: 0.2 } });
+        }
+
+        if (wall !== 0){
+          this.third.add.box(
+            { x: x * GRID, y: GRID / 2, z: y * GRID, height: GRID - GRID / 10, width: GRID, depth: GRID },
+            { lambert: { map: textures.wall[wall - 1] } });
+        }
+
+        if (object !== 0){
+          this.third.add.sphere(
+            { x: x * GRID, y: GRID / 2, z: y * GRID, radius: GRID / 5 },
+            { lambert: { map: textures.wall[object - 1] } });
         }
       }
     }
 
-    this.third.add.box({ x: 0, y: 2, height: 4, width: 4, depth: 4 }, { lambert: { map: textures.wall[0] } });
+    window.party = this.third.add.sphere({ x: 0, y: 0, z: 0, radius: GRID / 10 }, { lambert: { color: "#ff0000" } });
+
   }
 
   moveParty(event) {
@@ -108,6 +129,9 @@ export class Explore extends Scene3D {
       default:
         break;
     }
+
+    // this.third.camera.position.set(this.state.party.x * 4, 0, this.state.party.y * 4);
+    window.party.position.set(this.state.party.x * GRID, 0, this.state.party.y * GRID);
 
     this.text.setText(this.state.map.debugShowMap(this.state.party.x, this.state.party.y, this.state.party.a));
   }

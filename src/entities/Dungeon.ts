@@ -7,19 +7,20 @@ export class Dungeon {
   floors: number[][];
   ceilings: number[][];
   objects: number[][];
+  walls: number[][];
   scripts: Record<string, Script>;
 
   constructor() {
     this.name = "Test map";
-    this.floors = [ // Map is mirrored vertically
-      [1, 1, 1, 1, 4],
+    this.floors = [
       [1, 1, 1, 1, 1],
+      [1, 0, 1, 1, 0],
       [1, 1, 0, 1, 2],
       [1, 1, 1, 2, 3],
-      [4, 1, 2, 3, 0],];
+      [4, 4, 4, 4, 4],];
 
     this.ceilings = [
-      [1, 1, 1, 1, 1],
+      [0, 1, 1, 1, 1],
       [1, 0, 0, 0, 1],
       [1, 0, 0, 0, 1],
       [1, 0, 0, 0, 1],
@@ -28,8 +29,16 @@ export class Dungeon {
     this.objects = [
       [0, 0, 0, 0, 0],
       [0, 0, 0, 1, 0],
+      [0, 0, 0, 0, 0],
+      [0, 2, 0, 3, 0],
+      [0, 0, 0, 0, 0]
+    ];
+
+    this.walls = [
+      [0, 0, 0, 0, 0],
+      [0, 0, 2, 0, 0],
       [0, 2, 0, 0, 0],
-      [0, 0, 0, 3, 0],
+      [0, 0, 1, 0, 0],
       [0, 0, 0, 0, 0]
     ];
 
@@ -63,7 +72,7 @@ export class Dungeon {
   }
 
   isPassable(x: number, y: number) {
-    return this.objects[y][x] === 0;
+    return this.walls[y][x] === 0;
   }
 
   getScript(x: number, y: number): Script {
