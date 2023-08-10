@@ -32,6 +32,13 @@ export class Party {
     this.y = y;
   }
 
+  getForward() {
+    return {
+      x: this.x + Math.round(Math.sin(this.a * Math.PI / 2)),
+      y: this.y + Math.round(Math.cos(this.a * Math.PI / 2))
+    };
+  }
+
   forward(map: Dungeon) {
     const newx = this.x + Math.round(Math.sin(this.a * Math.PI / 2));
     const newy = this.y + Math.round(Math.cos(this.a * Math.PI / 2));

@@ -130,8 +130,12 @@ export class Explore extends Scene3D {
         break;
     }
 
-    // this.third.camera.position.set(this.state.party.x * 4, 0, this.state.party.y * 4);
+    const forward = this.state.party.getForward();
+    console.log("forward", forward);
+    this.third.camera.position.set(this.state.party.x * GRID, GRID / 2, this.state.party.y * GRID);
+    this.third.camera.lookAt(forward.x * GRID, GRID / 2, forward.y * GRID);
     window.party.position.set(this.state.party.x * GRID, 0, this.state.party.y * GRID);
+
 
     this.text.setText(this.state.map.debugShowMap(this.state.party.x, this.state.party.y, this.state.party.a));
   }
