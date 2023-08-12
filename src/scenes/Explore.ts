@@ -47,24 +47,21 @@ export class Explore extends Scene3D {
           this.runScript();
           break;
       }
+
+      this.updateScene();
     });
-
-    //DEBUG
-    window.cam = this.third.camera;
-    window.party = this.state.party;
-
-
 
     // 3d scene
     const textures = this.registry.get("textures");
     this.third.warpSpeed("-ground", "-sky");
 
-    for (let x = 0; x < this.state.map.getWidth(); x++) {
-      for (let y = 0; y < this.state.map.getHeight(); ++y) {
-        const floor = this.state.map.floors[x][y];
-        const ceiling = this.state.map.ceilings[x][y];
-        const object = this.state.map.objects[x][y];
-        const wall = this.state.map.walls[x][y];
+
+    for (let y = 0; y < this.state.map.getHeight(); ++y) {
+      for (let x = 0; x < this.state.map.getWidth(); ++x) {
+        const floor = this.state.map.floors[y][x];
+        const ceiling = this.state.map.ceilings[y][x];
+        const object = this.state.map.objects[y][x];
+        const wall = this.state.map.walls[y][x];
 
         if (floor !== 0){
           this.third.add.box(
@@ -92,8 +89,11 @@ export class Explore extends Scene3D {
       }
     }
 
-    window.party = this.third.add.sphere({ x: 0, y: 0, z: 0, radius: GRID / 10 }, { lambert: { color: "#ff0000" } });
-
+    // DEBUG
+    window.party = this.third.add.box({ x: 0, y: 0, z: 0, height: GRID / 4 }, { lambert: { color: "#ff0000" } });
+    window.cam = this.third.camera;
+    // First set
+    this.updateScene();
   }
 
   moveParty(event) {
@@ -116,7 +116,6 @@ export class Explore extends Scene3D {
 
       case " ": {
         const script = this.state.map.getScript(this.state.party.x, this.state.party.y);
-        console.log(script);
 
         if (script) {
           this.script = script;
@@ -129,7 +128,9 @@ export class Explore extends Scene3D {
       default:
         break;
     }
+  }
 
+  updateScene() {
     const forward = this.state.party.getForward();
     const backward = this.state.party.getBackward();
     console.log("Update: f/b", forward, backward);
@@ -137,8 +138,6 @@ export class Explore extends Scene3D {
     this.third.camera.position.set(backward.x * GRID, GRID / 2, backward.y * GRID);
     this.third.camera.lookAt(forward.x * GRID, GRID / 2, forward.y * GRID);
     window.party.position.set(this.state.party.x * GRID, 0, this.state.party.y * GRID);
-
-
     this.text.setText(this.state.map.debugShowMap(this.state.party.x, this.state.party.y, this.state.party.a));
   }
 

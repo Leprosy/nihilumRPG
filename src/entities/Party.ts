@@ -14,11 +14,11 @@ export class Party {
     this.a = 0;
   }
 
-  turnRight() {
+  turnLeft() {
     this.a = (this.a + 1) % 4;
   }
 
-  turnLeft() {
+  turnRight() {
     this.a = this.a - 1;
     if (this.a < 0) this.a = 3;
   }

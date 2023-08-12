@@ -14,10 +14,10 @@ export class Dungeon {
     this.name = "Test map";
     this.floors = [
       [1, 1, 1, 1, 1],
-      [1, 0, 1, 1, 0],
-      [1, 1, 0, 1, 2],
-      [1, 1, 1, 2, 3],
-      [4, 4, 4, 4, 4],];
+      [1, 0, 1, 1, 1],
+      [0, 1, 0, 1, 1],
+      [1, 1, 1, 1, 1],
+      [4, 4, 4, 4, 1],];
 
     this.ceilings = [
       [0, 1, 1, 1, 1],
@@ -36,9 +36,9 @@ export class Dungeon {
 
     this.walls = [
       [0, 0, 0, 0, 0],
-      [0, 0, 2, 0, 0],
       [0, 2, 0, 0, 0],
-      [0, 0, 1, 0, 0],
+      [0, 2, 0, 0, 0],
+      [0, 1, 0, 1, 0],
       [0, 0, 0, 0, 0]
     ];
 
@@ -83,14 +83,14 @@ export class Dungeon {
 
   debugShowMap(px, py, a) {
     let map = "";
-    const char = ["n", "e", "s", "w"][a];
+    const char = ["n", "w", "s", "e"][a];
 
-    for (let y = this.floors.length - 1; y >= 0; --y) {
+    for (let y = 0; y < this.floors.length; ++y) {
       for (let x = 0; x < this.floors[y].length; ++x) {
         if (px === x && py === y) {
           map += char;
         } else {
-          map += this.floors[y][x];
+          map += this.walls[y][x];
         }
       }
 
