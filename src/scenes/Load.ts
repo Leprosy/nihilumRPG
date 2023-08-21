@@ -10,7 +10,10 @@ export class Load extends Scene3D {
     super("Load");
   }
 
-  preload() {}
+  preload() {
+    // if no map is passed, load first one
+    this.load.json("map", "assets/maps/map0.json");
+  }
 
   init() {
     this.accessThirdDimension();
@@ -19,7 +22,7 @@ export class Load extends Scene3D {
   async create() {
     const state: GameState = {
       party: new Party([new Actor()]),
-      map: new Dungeon()
+      map: new Dungeon(this.cache.json.get("map"))
     };
 
     const textures = {};

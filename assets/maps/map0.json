@@ -1,0 +1,81 @@
+{
+  "name": "Entry",
+  "startPoints": [ { "x": 0, "y": 0 } ],
+  "floors": [
+    [ 1, 1, 1, 1, 1 ],
+    [ 1, 0, 1, 1, 1 ],
+    [ 0, 1, 0, 1, 1 ],
+    [ 1, 1, 1, 1, 1 ],
+    [ 4, 4, 4, 4, 1 ]
+  ],
+  "ceilings": [
+    [ 0, 1, 1, 1, 1 ],
+    [ 1, 0, 0, 0, 1 ],
+    [ 1, 0, 0, 0, 1 ],
+    [ 1, 0, 0, 0, 1 ],
+    [ 1, 1, 1, 1, 1 ]
+  ],
+  "objects": [
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 1, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 2, 0, 3, 0 ],
+    [ 0, 0, 0, 0, 0 ]
+  ],
+  "walls": [
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 2, 0, 0, 0 ],
+    [ 0, 2, 0, 0, 0 ],
+    [ 0, 1, 0, 1, 0 ],
+    [ 0, 0, 0, 0, 0 ]
+  ],
+  "scripts": {
+    "0x4": {
+      "inmediate": true,
+      "code": [
+        {
+          "command": "display",
+          "data": "Hello world!"
+        }
+      ]
+    },
+    "4x4": {
+      "inmediate": true,
+      "code": [
+        {
+          "command": "display",
+          "data": "This is a message"
+        },
+        {
+          "command": "display",
+          "data": "Answer"
+        },
+        {
+          "command": "choice",
+          "data": {
+            "text": "Are you ready?",
+            "options": {
+              "n": 3,
+              "y": 5
+            }
+          }
+        },
+        {
+          "command": "display",
+          "data": "You are not ready"
+        },
+        {
+          "command": "endScript"
+        },
+        {
+          "command": "display",
+          "data": "You are indeed ready...great"
+        },
+        {
+          "command": "changeDungeon",
+          "data": { "dungeon": "map1", "startPoint": 0 }
+        }
+      ]
+    }
+  }
+}

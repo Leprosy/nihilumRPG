@@ -10,57 +10,24 @@ export class Dungeon {
   walls: number[][];
   scripts: Record<string, Script>;
 
-  constructor() {
-    this.name = "Test map";
-    this.floors = [
-      [1, 1, 1, 1, 1],
-      [1, 0, 1, 1, 1],
-      [0, 1, 0, 1, 1],
-      [1, 1, 1, 1, 1],
-      [4, 4, 4, 4, 1],];
+  constructor(data: any) {
+    //TODO create a type for this?
+    this.loadDungeon(data);
+  }
 
-    this.ceilings = [
-      [0, 1, 1, 1, 1],
-      [1, 0, 0, 0, 1],
-      [1, 0, 0, 0, 1],
-      [1, 0, 0, 0, 1],
-      [1, 1, 1, 1, 1],];
-
-    this.objects = [
-      [0, 0, 0, 0, 0],
-      [0, 0, 0, 1, 0],
-      [0, 0, 0, 0, 0],
-      [0, 2, 0, 3, 0],
-      [0, 0, 0, 0, 0]
-    ];
-
-    this.walls = [
-      [0, 0, 0, 0, 0],
-      [0, 2, 0, 0, 0],
-      [0, 2, 0, 0, 0],
-      [0, 1, 0, 1, 0],
-      [0, 0, 0, 0, 0]
-    ];
-
-    this.scripts = {
-      "0x4": {
-        inmediate: true,
-        code: [
-          { command: "display", data: "Hello world!" },
-        ],
-      },
-      "4x4": {
-        inmediate: true,
-        code: [
-          { command: "display", data: "This is a message" },
-          { command: "display", data: "Answer" },
-          { command: "choice", data: { text: "Are you ready?", options: { n: 3, y: 5 } } },
-          { command: "display", data: "You are not ready" },
-          { command: "endScript" },
-          { command: "display", data: "You are indeed ready...great" },
-        ],
-      }
-    };
+  loadDungeon(data: any) {
+    console.log("loading", data);
+    try {
+      this.name = data.name;
+      this.floors = data.floors;
+      this.ceilings = data.ceilings;
+      this.objects = data.objects;
+      this.walls = data.walls;
+      this.scripts = data.scripts;
+      console.log("done", this);
+    } catch (e) {
+      console.error("Dungeon.loadDungeon: Error loading map", e);
+    }
   }
 
   getWidth() {

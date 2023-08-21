@@ -8,6 +8,7 @@ export type GameState = {
 
 export enum ExplorationStatus {
   Exploring,
+  Teleporting,
   Script,
   ScriptChoice,
   ScriptPrompt

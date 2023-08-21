@@ -33,4 +33,29 @@ export class CommandRunner {
     }
   }
 
+  changeDungeon(data: any) {
+    this.scene.currentStatus = ExplorationStatus.Teleporting;
+
+    this.scene.load.once("complete", () => {
+      try {
+        console.log("map loaded", data, this.scene.cache.json.get("map"));
+        const map = this.scene.cache.json.get("map");
+        const start = map.startPoints[data.startPoint];
+        this.scene.state.map.loadDungeon(map);
+        this.scene.state.party.x = start.x;
+        this.scene.state.party.y = start.y;
+        this.scene.drawMap();
+        this.scene.updateScene();
+      } catch (e) {
+        console.error("CommandRunner.changeDungeon: Error changing dungeon", e);
+      }
+
+      this.scene.currentStatus = ExplorationStatus.Exploring;
+      this.scene.pointer++;
+    });
+
+    this.scene.cache.json.remove("map");
+    this.scene.load.json("map", `assets/maps/${data.dungeon}.json`).start();
+  }
+
 }

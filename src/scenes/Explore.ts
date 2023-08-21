@@ -15,12 +15,15 @@ export class Explore extends Scene3D {
   lastKey: string;
   runner: CommandRunner;
 
+  geometries: any[];
+
   constructor() {
     super("Explore");
     this.currentStatus = ExplorationStatus.Exploring;
     this.pointer = 0;
     this.lastKey = "";
     this.runner = new CommandRunner(this);
+    this.geometries = [];
   }
 
   init() {
@@ -52,9 +55,17 @@ export class Explore extends Scene3D {
     });
 
     // 3d scene
-    const textures = this.registry.get("textures");
     this.third.warpSpeed("-ground", "-sky");
+    this.drawMap();
 
+    // First set
+    this.updateScene();
+  }
+
+  drawMap() {
+    this.geometries.forEach(item => item.removeFromParent());
+    this.geometries = [];
+    const textures = this.registry.get("textures");
 
     for (let y = 0; y < this.state.map.getHeight(); ++y) {
       for (let x = 0; x < this.state.map.getWidth(); ++x) {
@@ -64,36 +75,30 @@ export class Explore extends Scene3D {
         const wall = this.state.map.walls[y][x];
 
         if (floor !== 0){
-          this.third.add.box(
+          this.geometries.push(this.third.add.box(
             { x: x * GRID, y: 0, z: y * GRID, height: GRID / 10, width: GRID, depth: GRID },
-            { lambert: { map: textures.floor[floor - 1] } });
+            { lambert: { map: textures.floor[floor - 1] } }));
         }
 
         if (ceiling !== 0){
-          this.third.add.box(
+          this.geometries.push(this.third.add.box(
             { x: x * GRID, y: GRID, z: y * GRID, height: GRID / 10, width: GRID, depth: GRID },
-            { lambert: { map: textures.ceiling[ceiling - 1], transparent: true, opacity: 0.2 } });
+            { lambert: { map: textures.ceiling[ceiling - 1], transparent: true, opacity: 0.2 } }));
         }
 
         if (wall !== 0){
-          this.third.add.box(
+          this.geometries.push(this.third.add.box(
             { x: x * GRID, y: GRID / 2, z: y * GRID, height: GRID - GRID / 10, width: GRID, depth: GRID },
-            { lambert: { map: textures.wall[wall - 1] } });
+            { lambert: { map: textures.wall[wall - 1] } }));
         }
 
         if (object !== 0){
-          this.third.add.sphere(
+          this.geometries.push(this.third.add.sphere(
             { x: x * GRID, y: GRID / 2, z: y * GRID, radius: GRID / 5 },
-            { lambert: { map: textures.wall[object - 1] } });
+            { lambert: { map: textures.wall[object - 1] } }));
         }
       }
     }
-
-    // DEBUG
-    window.party = this.third.add.box({ x: 0, y: 0, z: 0, height: GRID / 4 }, { lambert: { color: "#ff0000" } });
-    window.cam = this.third.camera;
-    // First set
-    this.updateScene();
   }
 
   moveParty(event) {
@@ -112,6 +117,15 @@ export class Explore extends Scene3D {
 
       case "s":
         this.state.party.backward(this.state.map);
+        break;
+
+      case "l":
+        this.currentStatus = ExplorationStatus.Teleporting;
+        this.load.once("complete", () => {
+          console.log(this.cache.json.get("map"));
+          this.currentStatus = ExplorationStatus.Exploring;
+        });
+        this.load.json("map", "assets/maps/map1.json").start();
         break;
 
       case " ": {
@@ -137,7 +151,6 @@ export class Explore extends Scene3D {
     console.log("Update: party", this.state.party);
     this.third.camera.position.set(backward.x * GRID, GRID / 2, backward.y * GRID);
     this.third.camera.lookAt(forward.x * GRID, GRID / 2, forward.y * GRID);
-    window.party.position.set(this.state.party.x * GRID, 0, this.state.party.y * GRID);
     this.text.setText(this.state.map.debugShowMap(this.state.party.x, this.state.party.y, this.state.party.a));
   }
 
