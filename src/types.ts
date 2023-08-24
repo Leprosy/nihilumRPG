@@ -1,9 +1,11 @@
 import { Dungeon } from "./entities/Dungeon";
 import { Party } from "./entities/Party";
+import { QuestManager } from "./helpers/QuestManager";
 
 export type GameState = {
   party: Party;
   map: Dungeon;
+  quests: QuestManager;
 }
 
 export enum ExplorationStatus {
@@ -22,4 +24,9 @@ export type Script = {
 export type ScriptInstruction = {
   command: "display" | "prompt" | "choice" | "setPointer" | "endScript" | "comment";
   data?: any
+}
+
+export type Quest = {
+  id: string;
+  description: string;
 }
