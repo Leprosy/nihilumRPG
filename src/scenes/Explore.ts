@@ -1,19 +1,20 @@
 import { Scene3D } from "@enable3d/phaser-extension";
 import { GameState, Status } from "../types";
-import { CommandRunner } from "../helpers/CommandRunner";
+import { ScriptRunner } from "../helpers/ScriptRunner";
+import { EventManager } from "../helpers/EventManager";
 
 const GRID = 10;
 
 export class Explore extends Scene3D {
   state: GameState;
   geometries: any[];
-  runner: CommandRunner;
+  runner: ScriptRunner;
   lastKey: string;
 
   constructor() {
     super("Explore");
     this.lastKey = "";
-    this.runner = new CommandRunner(this);
+    this.runner = new ScriptRunner(this);
     this.geometries = [];
   }
 
@@ -26,8 +27,12 @@ export class Explore extends Scene3D {
   create() {
     this.state = this.registry.get("state");
 
+    // External events
+    EventManager.on("taldo", (args) => console.log("OAW", args));
+
     // Key events
     this.input.keyboard.on("keydown", event => {
+      EventManager.emit("taldo", ["crap", { another: "crap" }]);
       this.lastKey = event.key;
 
       switch (this.state.status) {
@@ -37,7 +42,7 @@ export class Explore extends Scene3D {
 
         case Status.Script:
         case Status.ScriptChoice:
-          this.runScript();
+          this.runner.next();
           break;
       }
 
@@ -121,12 +126,13 @@ export class Explore extends Scene3D {
         break;
 
       case " ": {
+        // TODO address inmediate events
         const script = this.state.map.getScript(party.x, party.y);
 
         if (script) {
           this.runner.setScript(script);
           this.state.status = Status.Script;
-          this.runScript();
+          this.runner.next();
         }
 
         break;
@@ -135,20 +141,6 @@ export class Explore extends Scene3D {
       default:
         console.log("Explore.moveParty: Unregistered key", event);
         break;
-    }
-  }
-
-  runScript() {
-    if (this.runner.isComplete()) {
-      console.log("Script ended");
-      this.state.status = Status.Exploring;
-      return;
-    }
-
-    try {
-      this.runner.next();
-    } catch (e) {
-      console.error("Explore.runScript: error", e);
     }
   }
 

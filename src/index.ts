@@ -2,9 +2,9 @@ import Phaser from "phaser";
 import { enable3d, Canvas } from "@enable3d/phaser-extension";
 import { Main, Explore, Load } from "./scenes/";
 
-class SimpleGame {
-  game: Phaser.Game;
+export let Game;
 
+class SimpleGame {
   constructor() {
     const config: Phaser.Types.Core.GameConfig = {
       type: Phaser.WEBGL,
@@ -22,10 +22,10 @@ class SimpleGame {
       ...Canvas()
     };
 
-    enable3d(() => new Phaser.Game(config));
+    enable3d(() => Game = new Phaser.Game(config));
   }
 }
 
 window.onload = () => {
-  new SimpleGame();
+  Game = new SimpleGame();
 };
