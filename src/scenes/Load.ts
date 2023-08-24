@@ -2,7 +2,7 @@ import { Scene3D } from "@enable3d/phaser-extension";
 import { Party } from "../entities/Party";
 import { Actor } from "../entities/Actor";
 import { Dungeon } from "../entities/Dungeon";
-import { GameState } from "../types";
+import { GameState, Status } from "../types";
 import { Texture } from "three/src/textures/Texture";
 import { QuestManager } from "../helpers/QuestManager";
 
@@ -26,7 +26,8 @@ export class Load extends Scene3D {
     const state: GameState = {
       party: new Party([new Actor()]),
       map: new Dungeon(this.cache.json.get("map")),
-      quests: new QuestManager()
+      quests: new QuestManager(),
+      status: Status.Exploring
     };
 
     // Loading 3d assets
@@ -37,7 +38,6 @@ export class Load extends Scene3D {
     for (let j = 0; j < keys.length; ++j) {
       const arr: Promise<Texture>[] = [];
       const key = keys[j];
-      console.log("key", key);
 
       for (let i = 0; i < 4; ++i) {
         // TODO console is not showing "file not found" errors

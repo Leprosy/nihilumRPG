@@ -1,23 +1,17 @@
 import { Scene3D } from "@enable3d/phaser-extension";
-import { ExplorationStatus, GameState, Script } from "../types";
+import { GameState, Status } from "../types";
 import { CommandRunner } from "../helpers/CommandRunner";
 
 const GRID = 10;
 
 export class Explore extends Scene3D {
   state: GameState;
-  currentStatus: ExplorationStatus;
   geometries: any[];
   runner: CommandRunner;
-
-  script: Script;
-  pointer: number;
   lastKey: string;
 
   constructor() {
     super("Explore");
-    this.currentStatus = ExplorationStatus.Exploring;
-    this.pointer = 0;
     this.lastKey = "";
     this.runner = new CommandRunner(this);
     this.geometries = [];
@@ -36,13 +30,13 @@ export class Explore extends Scene3D {
     this.input.keyboard.on("keydown", event => {
       this.lastKey = event.key;
 
-      switch (this.currentStatus) {
-        case ExplorationStatus.Exploring:
+      switch (this.state.status) {
+        case Status.Exploring:
           this.moveParty(event);
           break;
 
-        case ExplorationStatus.Script:
-        case ExplorationStatus.ScriptChoice:
+        case Status.Script:
+        case Status.ScriptChoice:
           this.runScript();
           break;
       }
@@ -131,7 +125,7 @@ export class Explore extends Scene3D {
 
         if (script) {
           this.runner.setScript(script);
-          this.currentStatus = ExplorationStatus.Script;
+          this.state.status = Status.Script;
           this.runScript();
         }
 
@@ -139,21 +133,22 @@ export class Explore extends Scene3D {
       }
 
       default:
-        console.log("Explore.movePartry: Unregistered key", event);
+        console.log("Explore.moveParty: Unregistered key", event);
         break;
     }
   }
 
   runScript() {
+    if (this.runner.isComplete()) {
+      console.log("Script ended");
+      this.state.status = Status.Exploring;
+      return;
+    }
+
     try {
       this.runner.next();
     } catch (e) {
       console.error("Explore.runScript: error", e);
-    }
-
-    if (this.runner.isComplete()) {
-      console.log("Script ended");
-      this.currentStatus = ExplorationStatus.Exploring;
     }
   }
 

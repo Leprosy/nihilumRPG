@@ -6,9 +6,10 @@ export type GameState = {
   party: Party;
   map: Dungeon;
   quests: QuestManager;
+  status: Status;
 }
 
-export enum ExplorationStatus {
+export enum Status {
   Exploring,
   Teleporting,
   Script,
