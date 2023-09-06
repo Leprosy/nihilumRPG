@@ -2,7 +2,7 @@ import { Scene3D } from "@enable3d/phaser-extension";
 import { Party } from "../entities/Party";
 import { Actor } from "../entities/Actor";
 import { Dungeon } from "../entities/Dungeon";
-import { GameEvents, GameState, Status, loadMapArgs } from "../types";
+import { GameEvents, GameState, Status, TextureMap, loadMapArgs } from "../types";
 import { Texture } from "three/src/textures/Texture";
 import { QuestManager } from "../helpers/QuestManager";
 import { EventManager } from "../helpers/EventManager";
@@ -33,7 +33,7 @@ export class Load extends Scene3D {
 
     // Loading 3d assets
     // TODO can this be preloaded?
-    const textures: Record<string, Texture[]> = {};
+    const textures: TextureMap = {};
     const keys = ["floor", "wall", "object", "ceiling"];
 
     for (let j = 0; j < keys.length; ++j) {

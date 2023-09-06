@@ -1,6 +1,7 @@
 import { Dungeon } from "./entities/Dungeon";
 import { Party } from "./entities/Party";
 import { QuestManager } from "./helpers/QuestManager";
+import { Texture } from "three/src/textures/Texture";
 
 export type GameState = {
   party: Party;
@@ -31,6 +32,8 @@ export type Quest = {
   id: string;
   description: string;
 }
+
+export type TextureMap = Record<string, Texture[]>;
 
 export enum GameEvents {
   UpdateView = "UpdateView",

@@ -2,7 +2,7 @@ import { ExtendedObject3D, Scene3D } from "@enable3d/phaser-extension";
 import { GameEvents, GameState, Status } from "../types";
 import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
-import { Texture } from "three/src/textures/Texture";
+import { MapDraw } from "../helpers/MapDraw";
 
 const GRID = 10;
 
@@ -61,44 +61,7 @@ export class Explore extends Scene3D {
   }
 
   drawMap() {
-    // TODO refactor this shit!
-    this.geometries.forEach(item => item.removeFromParent());
-    this.geometries = [];
-    const { map } = this.state;
-    const textures: Record<string, Texture[]> = this.registry.get("textures");
-
-    for (let y = 0; y < map.getHeight(); ++y) {
-      for (let x = 0; x < map.getWidth(); ++x) {
-        const floor = map.floors[y][x];
-        const ceiling = map.ceilings[y][x];
-        const object = map.objects[y][x];
-        const wall = map.walls[y][x];
-
-        if (floor !== 0){
-          this.geometries.push(this.third.add.box(
-            { x: x * GRID, y: 0, z: y * GRID, height: GRID / 10, width: GRID, depth: GRID },
-            { lambert: { map: textures.floor[floor - 1] } }));
-        }
-
-        if (ceiling !== 0){
-          this.geometries.push(this.third.add.box(
-            { x: x * GRID, y: GRID, z: y * GRID, height: GRID / 10, width: GRID, depth: GRID },
-            { lambert: { map: textures.ceiling[ceiling - 1], transparent: true, opacity: 0.2 } }));
-        }
-
-        if (wall !== 0){
-          this.geometries.push(this.third.add.box(
-            { x: x * GRID, y: GRID / 2, z: y * GRID, height: GRID - GRID / 10, width: GRID, depth: GRID },
-            { lambert: { map: textures.wall[wall - 1] } }));
-        }
-
-        if (object !== 0){
-          this.geometries.push(this.third.add.sphere(
-            { x: x * GRID, y: GRID / 2, z: y * GRID, radius: GRID / 5 },
-            { lambert: { map: textures.wall[object - 1] } }));
-        }
-      }
-    }
+    MapDraw.render(this.geometries, this.state.map, this.registry.get("textures"), this.third);
   }
 
   updateScene() {
