@@ -33,7 +33,7 @@ export class Load extends Scene3D {
 
     // Loading 3d assets
     // TODO can this be preloaded?
-    const textures = {};
+    const textures: Record<string, Texture[]> = {};
     const keys = ["floor", "wall", "object", "ceiling"];
 
     for (let j = 0; j < keys.length; ++j) {

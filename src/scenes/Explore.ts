@@ -1,13 +1,14 @@
-import { Scene3D } from "@enable3d/phaser-extension";
+import { ExtendedObject3D, Scene3D } from "@enable3d/phaser-extension";
 import { GameEvents, GameState, Status } from "../types";
 import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
+import { Texture } from "three/src/textures/Texture";
 
 const GRID = 10;
 
 export class Explore extends Scene3D {
   state: GameState;
-  geometries: any[];
+  geometries: ExtendedObject3D[];
   runner: ScriptRunner;
   lastKey: string;
 
@@ -64,7 +65,7 @@ export class Explore extends Scene3D {
     this.geometries.forEach(item => item.removeFromParent());
     this.geometries = [];
     const { map } = this.state;
-    const textures = this.registry.get("textures");
+    const textures: Record<string, Texture[]> = this.registry.get("textures");
 
     for (let y = 0; y < map.getHeight(); ++y) {
       for (let x = 0; x < map.getWidth(); ++x) {
