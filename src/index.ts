@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { enable3d, Canvas } from "@enable3d/phaser-extension";
 import { Main, Explore, Load } from "./scenes/";
 
-export let Game;
+export let Game: SimpleGame;
 
 class SimpleGame {
   constructor() {
