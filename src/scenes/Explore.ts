@@ -32,11 +32,9 @@ export class Explore extends Scene3D {
       this.drawMap();
       this.updateScene();
     });
-    EventManager.on("taldo", (args) => console.log("OAW", args));
 
     // Key events
     this.input.keyboard.on("keydown", event => {
-      EventManager.emit("taldo", ["crap", { another: "crap" }]);
       this.lastKey = event.key;
 
       switch (this.state.status) {
@@ -127,12 +125,6 @@ export class Explore extends Scene3D {
 
       case "s":
         party.backward(this.state.map);
-        break;
-
-      case "l":
-        EventManager.emit(GameEvents.LoadMap, { dungeon: "map1", call: (a, b, c) => {
-          console.log("outside donde!", a, b, c);
-        } });
         break;
 
       case " ": {
