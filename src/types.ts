@@ -31,3 +31,13 @@ export type Quest = {
   id: string;
   description: string;
 }
+
+export enum GameEvents {
+  UpdateView = "UpdateView",
+  LoadMap = "LoadMap"
+}
+
+export type loadMapArgs = {
+  dungeon: string;
+  call: () => void;
+}
