@@ -1,5 +1,5 @@
 import { Scene3D } from "@enable3d/phaser-extension";
-import { GameState, Status } from "../types";
+import { GameEvents, GameState, Status } from "../types";
 import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
 
@@ -28,6 +28,10 @@ export class Explore extends Scene3D {
     this.state = this.registry.get("state");
 
     // External events
+    EventManager.on(GameEvents.UpdateView, () => {
+      this.drawMap();
+      this.updateScene();
+    });
     EventManager.on("taldo", (args) => console.log("OAW", args));
 
     // Key events
@@ -123,6 +127,12 @@ export class Explore extends Scene3D {
 
       case "s":
         party.backward(this.state.map);
+        break;
+
+      case "l":
+        EventManager.emit(GameEvents.LoadMap, { dungeon: "map1", call: (a, b, c) => {
+          console.log("outside donde!", a, b, c);
+        } });
         break;
 
       case " ": {
