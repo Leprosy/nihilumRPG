@@ -2,7 +2,7 @@ import Phaser from "phaser";
 import { enable3d, Canvas } from "@enable3d/phaser-extension";
 import { Main, Explore, Load } from "./scenes/";
 
-export let Game: SimpleGame;
+export let Game: Phaser.Game;
 
 class SimpleGame {
   constructor() {
@@ -27,5 +27,5 @@ class SimpleGame {
 }
 
 window.onload = () => {
-  Game = new SimpleGame();
+  new SimpleGame();
 };
