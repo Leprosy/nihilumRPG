@@ -34,7 +34,7 @@ export class Load extends Scene3D {
     // Loading 3d assets
     // TODO can this be preloaded?
     const textures: TextureMap = {};
-    const keys = ["floor", "wall", "object", "ceiling"];
+    const keys = ["floor", "wall", "object", "ceiling", "sky"];
 
     for (let j = 0; j < keys.length; ++j) {
       const arr: Promise<Texture>[] = [];

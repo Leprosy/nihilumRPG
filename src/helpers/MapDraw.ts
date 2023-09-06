@@ -1,4 +1,4 @@
-import { ExtendedObject3D } from "@enable3d/phaser-extension";
+import { ExtendedObject3D, THREE } from "@enable3d/phaser-extension";
 import { Dungeon } from "../entities/Dungeon";
 import Third from "@enable3d/phaser-extension/dist/third";
 import { TextureMap } from "../types";
@@ -43,5 +43,8 @@ export class MapDraw {
         }
       }
     }
+
+    third.add.sphere({ x: 0, y: 0, z: 0, radius: this.size * 100 },
+      { lambert: { map: textures.sky[0], side: THREE.BackSide } });
   }
 }
