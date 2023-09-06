@@ -60,8 +60,10 @@ export class Load extends Scene3D {
   loadMap(args: loadMapArgs) {
     console.log("Load.loadMap: loadMap/is ready", this.load.isReady(), args);
 
-    if (!this.load.isReady()) { // TODO this loader thing is weird...
+    if (!this.load.isReady()) { // TODO this loader thing is weird...why we need to reset and load again
       setTimeout(() => {
+        console.log("Load.loadMap: retrying", args);
+        this.load.reset();
         this.loadMap(args);
       }, 500);
       return;
