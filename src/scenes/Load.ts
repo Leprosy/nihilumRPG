@@ -2,9 +2,10 @@ import { Scene3D } from "@enable3d/phaser-extension";
 import { Party } from "../entities/Party";
 import { Actor } from "../entities/Actor";
 import { Dungeon } from "../entities/Dungeon";
-import { GameState, Status } from "../types";
+import { GameEvents, GameState, Status, loadMapArgs } from "../types";
 import { Texture } from "three/src/textures/Texture";
 import { QuestManager } from "../helpers/QuestManager";
+import { EventManager } from "../helpers/EventManager";
 
 export class Load extends Scene3D {
   constructor() {
@@ -21,7 +22,7 @@ export class Load extends Scene3D {
   }
 
   async create() {
-    // Creating the game state
+    // Creating the game states
     // TODO Load this from somewhere(saved game file)
     const state: GameState = {
       party: new Party([new Actor()]),
@@ -47,9 +48,31 @@ export class Load extends Scene3D {
       textures[key] = await Promise.all(arr);
     }
 
+    // Register map load event
+    EventManager.on(GameEvents.LoadMap, (args) => this.loadMap(args));
+
     // Done
     this.registry.set("state", state);
     this.registry.set("textures", textures);
     this.scene.start("Explore");
+  }
+
+  loadMap(args: loadMapArgs) {
+    console.log("Load.loadMap: loadMap/is ready", this.load.isReady(), args);
+
+    if (!this.load.isReady()) { // TODO this loader thing is weird...
+      setTimeout(() => {
+        this.loadMap(args);
+      }, 500);
+      return;
+    }
+
+    this.load.once("complete", () => {
+      console.log("Load.loadMap: inside loadmap complete");
+      args.call();
+    });
+
+    this.cache.json.remove("map");
+    this.load.json("map", `assets/maps/${args.dungeon}.json`).start();
   }
 }

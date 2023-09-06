@@ -1,6 +1,6 @@
 import { Game } from "..";
 import { Explore } from "../scenes/Explore";
-import { Status, Script } from "../types";
+import { Status, Script, GameEvents } from "../types";
 import { EventManager } from "./EventManager";
 
 export class ScriptRunner {
@@ -33,11 +33,7 @@ export class ScriptRunner {
   }
 
   display(data: any) {
-    console.log(Game);
-    console.log(Game.events);
-
     console.log("Displaying", data);
-    EventManager.emit("taldo", "crap fuck!");
     this.pointer++;
   }
 
@@ -65,25 +61,24 @@ export class ScriptRunner {
     const state = Game.registry.get("state");
     state.status = Status.Teleporting;
 
-    Game.load.once("complete", () => {
-      try {
-        const map = Game.cache.json.get("map");
-        const start = map.startPoints[data.startPoint];
-        state.map.loadDungeon(map);
-        state.party.x = start.x;
-        state.party.y = start.y;
-        this.scene.drawMap();
-        this.scene.updateScene();
-      } catch (e) {
-        console.error("ScriptRunner.changeDungeon: Error changing dungeon", e);
+    EventManager.emit(GameEvents.LoadMap, {
+      dungeon: data.dungeon,
+      call: () => {
+        try {
+          const map = Game.cache.json.get("map");
+          const start = map.startPoints[data.startPoint];
+          state.map.loadDungeon(map);
+          state.party.x = start.x;
+          state.party.y = start.y;
+          EventManager.emit(GameEvents.UpdateView);
+        } catch (e) {
+          console.error("ScriptRunner.changeDungeon: Error changing dungeon", e);
+        }
+
+        state.status = Status.Exploring;
+        this.pointer++;
       }
-
-      state.status = Status.Exploring;
-      this.pointer++;
     });
-
-    Game.cache.json.remove("map");
-    Game.load.json("map", `assets/maps/${data.dungeon}.json`).start();
   }
 
   /* giveQuest(data: any) {
