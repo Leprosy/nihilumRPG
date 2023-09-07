@@ -3,6 +3,7 @@ import { ExtendedObject3D, Scene3D, THREE } from "@enable3d/phaser-extension";
 import { Dungeon } from "../entities/Dungeon";
 import Third from "@enable3d/phaser-extension/dist/third";
 import { TextureMap } from "../types";
+import { GameConfig } from "../constants/config";
 
 export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
@@ -52,14 +53,14 @@ export class Graphics {
 
   static message(scene: Scene3D, text: string) {
     this.currentMessage = scene.add.group();
-    this.currentMessage.add(scene.add.rectangle(400, 400, 500, 500, 0xdcc072));
+    this.currentMessage.add(scene.add.rectangle(GameConfig.width / 2, GameConfig.height / 2, 400, 300, 0xdcc072));
     this.currentMessage.add(
-      scene.add.bitmapText(400, 300, "font_large", "Message")
-        .setCenterAlign()
+      scene.add.bitmapText(GameConfig.width / 2, GameConfig.height / 3, "font_large", "Message")
+        .setOrigin(0.5)
         .setTint(0x330000));
     this.currentMessage.add(
-      scene.add.bitmapText(400, 400, "font_small", text)
-        .setCenterAlign()
+      scene.add.bitmapText(GameConfig.width / 2, GameConfig.height / 3 + 50, "font_small", text)
+        .setOrigin(0.5)
         .setTint(0x330000));
   }
 
