@@ -81,17 +81,27 @@ export class ScriptRunner {
     });
   }
 
-  /* giveQuest(data: any) {
+  giveQuest(data: any) {
     const state = Game.registry.get("state");
-    state.quests.push({ id: data.id, description: data.description });
+    console.log("giving quest:", data);
+    state.quests.pushQuest(data.id, data.description);
+    console.log("quests now:", state.quests);
     this.pointer++;
     this.next();
   }
 
   checkQuest(data: any) {
-    console.log(this.scene.quests);
-    this.pointer++;
-    // this.next();
-  } */
+    const state = Game.registry.get("state");
+    console.log("quests are:", state.quests, "checking:", data);
+    console.log("has quest?", state.quests.hasQuest(data.questID));
+
+    if (state.quests.hasQuest(data.questID)) {
+      this.pointer = data.true;
+    } else {
+      this.pointer = data.false;
+    }
+
+    this.next();
+  }
 
 }

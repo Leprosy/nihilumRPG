@@ -78,7 +78,7 @@
       "code": [
         { "command": "display", "data": "hello travelers" },
         { "command": "checkQuest", "data": { "questID": "oaw1", "true": 2, "false": 4 } },
-        { "command": "display", "data": "good luck" },
+        { "command": "display", "data": "You are already questing. Good luck!" },
         { "command": "endScript" },
         { "command": "giveQuest", "data": { "id": "oaw1", "description": "This is a fucking quest" } },
         { "command": "display", "data": "Thanks for helping me out!" }
