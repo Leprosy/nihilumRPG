@@ -1,12 +1,14 @@
-import { ExtendedObject3D, THREE } from "@enable3d/phaser-extension";
+import Phaser from "phaser";
+import { ExtendedObject3D, Scene3D, THREE } from "@enable3d/phaser-extension";
 import { Dungeon } from "../entities/Dungeon";
 import Third from "@enable3d/phaser-extension/dist/third";
 import { TextureMap } from "../types";
 
-export class MapDraw {
+export class Graphics {
+  private static currentMessage: Phaser.GameObjects.Group;
   static size = 10;
 
-  static render(geometries: ExtendedObject3D[], map: Dungeon, textures: TextureMap, third: Third) {
+  static renderMap(geometries: ExtendedObject3D[], map: Dungeon, textures: TextureMap, third: Third) {
     // TODO refactor this shit!
     geometries.forEach(item => item.removeFromParent());
     geometries = [];
@@ -47,4 +49,26 @@ export class MapDraw {
     third.add.sphere({ x: 0, y: 0, z: 0, radius: this.size * 100 },
       { lambert: { map: textures.sky[0], side: THREE.BackSide } });
   }
+
+  static message(scene: Scene3D, text: string) {
+    this.currentMessage = scene.add.group();
+    this.currentMessage.add(scene.add.rectangle(400, 400, 500, 500, 0xdcc072));
+    this.currentMessage.add(
+      scene.add.bitmapText(400, 300, "font_large", "Message")
+        .setCenterAlign()
+        .setTint(0x330000));
+    this.currentMessage.add(
+      scene.add.bitmapText(400, 400, "font_small", text)
+        .setCenterAlign()
+        .setTint(0x330000));
+  }
+
+  static clearMessage() {
+    console.log("Graphics.clearMessage: current msg", this.currentMessage);
+
+    if (this.currentMessage) {
+      this.currentMessage.children.each(item => item.destroy());
+    }
+  }
 }
+

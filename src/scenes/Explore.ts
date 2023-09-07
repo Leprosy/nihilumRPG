@@ -2,7 +2,7 @@ import { ExtendedObject3D, Scene3D } from "@enable3d/phaser-extension";
 import { GameEvents, GameState, Status } from "../types";
 import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
-import { MapDraw } from "../helpers/MapDraw";
+import { Graphics } from "../helpers/Graphics";
 
 const GRID = 10;
 
@@ -61,7 +61,7 @@ export class Explore extends Scene3D {
   }
 
   drawMap() {
-    MapDraw.render(this.geometries, this.state.map, this.registry.get("textures"), this.third);
+    Graphics.renderMap(this.geometries, this.state.map, this.registry.get("textures"), this.third);
   }
 
   updateScene() {

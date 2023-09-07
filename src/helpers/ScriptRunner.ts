@@ -2,10 +2,11 @@ import { Game } from "..";
 import { Explore } from "../scenes/Explore";
 import { Status, Script, GameEvents } from "../types";
 import { EventManager } from "./EventManager";
+import { Graphics } from "./Graphics";
 
 export class ScriptRunner {
   script: Script;
-  scene: Explore;
+  scene: Explore; // TODO: Finish decoupling this from Explore
   pointer: number;
 
   constructor(scene: Explore) {
@@ -20,6 +21,7 @@ export class ScriptRunner {
 
   next() {
     const state = Game.registry.get("state");
+    Graphics.clearMessage();
 
     if (this.pointer >= this.script.code.length) {
       console.log("ScriptRunner.next: Script ended");
@@ -34,6 +36,7 @@ export class ScriptRunner {
 
   display(data: any) {
     console.log("Displaying", data);
+    Graphics.message(this.scene, data);
     this.pointer++;
   }
 

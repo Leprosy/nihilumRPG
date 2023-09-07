@@ -11,13 +11,15 @@ export class Main extends Phaser.Scene {
 
   preload() {
     this.load.image("logo", "assets/logo.png");
-    this.load.bitmapFont("font", "assets/fonts/arcade.png", "assets/fonts/arcade.xml");
+    this.load.bitmapFont("font_large", "assets/fonts/large.png", "assets/fonts/large.xml");
+    this.load.bitmapFont("font_small", "assets/fonts/small.png", "assets/fonts/small.xml");
   }
 
   create() {
     // Display something
-    this.add.bitmapText(400, 300, "font", "Preszs <Space>").setOrigin(0.5).setTint(0xff0066);
-    this.add.text(400, 500, `Version ${this.game.config.gameVersion} ${new Date()}`, textStyles.debug).setOrigin(0.5);
+    this.add.bitmapText(400, 300, "font_large", "Nihilum RPG").setOrigin(0.5).setTint(0xff0066);
+    this.add.bitmapText(400, 500, "font_small", "Typescript RPG engine").setOrigin(0.5).setTint(0xff0066);
+    this.add.text(400, 700, `Version ${this.game.config.gameVersion} ${new Date()}`, textStyles.debug).setOrigin(0.5);
 
     // Keys
     this.keys["space"] = this.input.keyboard.addKey("SPACE");
