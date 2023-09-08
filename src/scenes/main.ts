@@ -20,7 +20,7 @@ export class Main extends Phaser.Scene {
     // Display something
     this.add.bitmapText(GameConfig.width / 2, GameConfig.height / 3, "font_large", "Nihilum RPG").setTint(0xff0066).setOrigin(0.5);
     this.add.bitmapText(GameConfig.width / 2, GameConfig.height / 3 + 50, "font_small", "Typescript RPG engine").setOrigin(0.5).setTint(0xff0066);
-    this.add.text(GameConfig.width / 2, GameConfig.height / 3 + 200, `Version ${this.game.config.gameVersion} ${new Date()}`, textStyles.debug).setOrigin(0.5);
+    this.add.text(GameConfig.width / 2, GameConfig.height / 3 + 200, `this is long text???\ncan be rendered?\n Version ${this.game.config.gameVersion} ${new Date()}`, textStyles.debug).setOrigin(0.5);
 
     // Keys
     this.keys["space"] = this.input.keyboard.addKey("SPACE");

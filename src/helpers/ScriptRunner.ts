@@ -46,6 +46,7 @@ export class ScriptRunner {
 
   choice(data: any) {
     const state = Game.registry.get("state");
+    Graphics.message(this.scene, `Select:\n${  Object.keys(data.options).join(",")}`);
 
     if (state.status != Status.ScriptChoice) {
       state.status = Status.ScriptChoice;
