@@ -1,4 +1,4 @@
-import { Scene3D } from "@enable3d/phaser-extension";
+import { Scene3D, THREE } from "@enable3d/phaser-extension";
 import { Party } from "../entities/Party";
 import { Actor } from "../entities/Actor";
 import { Dungeon } from "../entities/Dungeon";
@@ -46,6 +46,10 @@ export class Load extends Scene3D {
       }
 
       textures[key] = await Promise.all(arr);
+      textures[key].forEach(item => {
+        item.magFilter = THREE.NearestFilter;
+        item.minFilter = THREE.LinearMipMapLinearFilter;
+      });
     }
 
     // Register map load event
