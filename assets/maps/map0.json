@@ -34,17 +34,19 @@
       "inmediate": true,
       "code": [
         {
-          "command": "display",
-          "data": "Hello world!"
-        }
+          "command": "message",
+          "data": { "title": "A message", "message": "Hello world!" }
+        },
+        { "command": "message", "data": { "title": "Another message", "message": "Hello again!\nThis is a long, multiline\nmessage." } },
+        { "command": "message", "data": { "title": "Yet another message", "message": "Hello again!\nAnother very long\n\n\nThis is a long, multiline\nmessage." } }
       ]
     },
     "4x4": {
       "inmediate": true,
       "code": [
         {
-          "command": "display",
-          "data": "Travel to another world"
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "Do you want to travel\nto another world?" }
         },
         {
           "command": "choice",
@@ -57,15 +59,15 @@
           }
         },
         {
-          "command": "display",
-          "data": "You are not ready"
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "You are not ready..." }
         },
         {
           "command": "endScript"
         },
         {
-          "command": "display",
-          "data": "You are indeed ready...great"
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "Get ready..." }
         },
         {
           "command": "changeDungeon",
@@ -76,12 +78,12 @@
     "4x0": {
       "inmediate": false,
       "code": [
-        { "command": "display", "data": "hello travelers" },
+        { "command": "dialog", "data": { "title": "The wizard", "message": "Hello travelers...", "face": "face0" } },
         { "command": "checkQuest", "data": { "questID": "oaw1", "true": 2, "false": 4 } },
-        { "command": "display", "data": "You are already questing. Good luck!" },
+        { "command": "dialog", "data": { "title": "The wizard", "message": "You are already questing.\nGood luck!", "face": "face0" } },
         { "command": "endScript" },
         { "command": "giveQuest", "data": { "id": "oaw1", "description": "This is a fucking quest" } },
-        { "command": "display", "data": "Thanks for helping me out!" }
+        { "command": "dialog", "data": { "title": "The wizard", "message": "Please help me!", "face": "face0" } }
       ]
     }
   }
