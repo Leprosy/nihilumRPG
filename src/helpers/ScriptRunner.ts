@@ -4,6 +4,19 @@ import { Status, Script, GameEvents } from "../types";
 import { EventManager } from "./EventManager";
 import { Graphics } from "./Graphics";
 
+
+
+type MessageParams = {
+  message: string;
+  title: string;
+}
+
+type DialogParams = MessageParams & {
+  face: string;
+}
+
+type CommandParams = MessageParams | DialogParams;
+
 export class ScriptRunner {
   script: Script;
   scene: Explore; // TODO: Finish decoupling this from Explore
@@ -34,19 +47,24 @@ export class ScriptRunner {
     this[command](data);
   }
 
-  display(data: any) {
-    console.log("Displaying", data);
-    Graphics.message(this.scene, data);
+  message(data: MessageParams) {
+    Graphics.message(this.scene, data.title, data.message);
+    this.pointer++;
+  }
+
+  dialog(data: DialogParams) {
+    Graphics.dialog(this.scene, data.title, data.message, data.face);
     this.pointer++;
   }
 
   endScript() {
     this.pointer = this.script.code.length;
+    this.next();
   }
 
   choice(data: any) {
     const state = Game.registry.get("state");
-    Graphics.message(this.scene, `Select:\n${  Object.keys(data.options).join(",")}`);
+    Graphics.message(this.scene, "Select an option", Object.keys(data.options).join(","));
 
     if (state.status != Status.ScriptChoice) {
       state.status = Status.ScriptChoice;

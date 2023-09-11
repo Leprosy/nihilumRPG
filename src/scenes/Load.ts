@@ -15,6 +15,10 @@ export class Load extends Scene3D {
   preload() {
     // TODO if no map is passed, load first one
     this.load.json("map", "assets/maps/map0.json");
+
+    // Faces
+    this.load.image("face0", "assets/img/face/face0.gif");
+
   }
 
   init() {

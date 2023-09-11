@@ -51,17 +51,34 @@ export class Graphics {
       { lambert: { map: textures.sky[0], side: THREE.BackSide } });
   }
 
-  static message(scene: Scene3D, text: string) {
+  static message(scene: Scene3D, title: string, text: string) {
     this.currentMessage = scene.add.group();
     this.currentMessage.add(scene.add.rectangle(GameConfig.width / 2, GameConfig.height / 2, 400, 300, 0xdcc072));
     this.currentMessage.add(
-      scene.add.bitmapText(GameConfig.width / 2, GameConfig.height / 3, "font_large", "Message")
-        .setOrigin(0.5)
+      scene.add.bitmapText(GameConfig.width / 2, GameConfig.height / 5, "font_large", title)
+        .setOrigin(0.5, 0)
         .setTint(0x330000));
     this.currentMessage.add(
-      scene.add.bitmapText(GameConfig.width / 2, GameConfig.height / 3 + 50, "font_small", text)
-        .setOrigin(0.5)
+      scene.add.bitmapText(GameConfig.width / 2, GameConfig.height / 5 + 50, "font_small", text)
+        .setOrigin(0.5, 0)
+        .setTint(0x330000)
+        .setFontSize(24));
+
+    window.oaw = this.currentMessage;
+  }
+
+  static dialog(scene: Scene3D, title: string, text: string, face: string) {
+    this.currentMessage = scene.add.group();
+    this.currentMessage.add(scene.add.rectangle(GameConfig.width / 2, GameConfig.height / 2, 400, 300, 0xdcc072));
+    this.currentMessage.add(
+      scene.add.bitmapText(GameConfig.width / 2 + 30, GameConfig.height / 4, "font_large", title)
+        .setOrigin(0.5, 0)
         .setTint(0x330000));
+    this.currentMessage.add(
+      scene.add.bitmapText(GameConfig.width / 2, GameConfig.height / 3 + 100, "font_small", text)
+        .setOrigin(0.5)
+        .setTint(0x330000).setFontSize(24));
+    this.currentMessage.add(scene.add.image(170, 120, "face0").setDisplaySize(100, 100));
   }
 
   static clearMessage() {
@@ -72,4 +89,3 @@ export class Graphics {
     }
   }
 }
-

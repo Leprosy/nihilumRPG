@@ -21,6 +21,7 @@ export class Explore extends Scene3D {
 
   init() {
     this.accessThirdDimension();
+    this.third.renderer.setPixelRatio(5);
   }
 
   preload() {}
