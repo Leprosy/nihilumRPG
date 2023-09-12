@@ -36,25 +36,41 @@ export class Load extends Scene3D {
     };
 
     // Loading 3d assets
-    // TODO can this be preloaded?
-    const textures: TextureMap = {};
     const keys = ["floor", "wall", "object", "ceiling", "sky"];
+    const textures: TextureMap = {};
 
     for (let j = 0; j < keys.length; ++j) {
-      const arr: Promise<Texture>[] = [];
+      let index = 1;
+      let change = false;
+      const arr: Texture[] = [];
       const key = keys[j];
 
-      for (let i = 0; i < 4; ++i) {
-        // TODO console is not showing "file not found" errors
-        arr.push(this.third.load.texture(`/assets/img/textures/${key}${i + 1}.png`));
+      while (!change) {
+        const txtName = `/assets/img/textures/${key}${index}.png`;
+        console.log("Load: loading texture", txtName);
+
+        const result: Texture | unknown = await Promise.race([
+          this.third.load.texture(txtName),
+          new Promise((res) => setTimeout(() => res(undefined), 100))
+        ]);
+
+        if (!result) {
+          change = true;
+        } else {
+          arr.push(result as Texture);
+          ++index;
+        }
       }
 
-      textures[key] = await Promise.all(arr);
-      textures[key].forEach(item => {
-        item.magFilter = THREE.NearestFilter;
-        item.minFilter = THREE.LinearMipMapLinearFilter;
-      });
+      textures[key] = arr;
     }
+
+    // Debug monster
+    textures.monster = await Promise.all([this.third.load.texture("/assets/img/objects/mon0.png")]);
+    textures.monster.forEach(item => {
+      item.magFilter = THREE.NearestFilter;
+      item.minFilter = THREE.LinearMipMapLinearFilter;
+    });
 
     // Register map load event
     EventManager.on(GameEvents.LoadMap, (args) => this.loadMap(args));

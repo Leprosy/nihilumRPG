@@ -47,8 +47,21 @@ export class Graphics {
       }
     }
 
+    // Sky dome
     third.add.sphere({ x: 0, y: 0, z: 0, radius: this.size * 100 },
       { lambert: { map: textures.sky[0], side: THREE.BackSide } });
+
+    // Monsters
+    const monsterSize = this.size * 0.9;
+    window.oaw = third.add.plane({
+      x: 0, y: monsterSize / 2, z: 0, height: monsterSize, width: monsterSize / 2
+    },
+    {
+      lambert: { map: textures.monster[0], side: THREE.DoubleSide, transparent: true }
+    });
+    oaw.material.map.offset.x = 0;
+    oaw.material.map.repeat.x = 0.25;
+
   }
 
   static message(scene: Scene3D, title: string, text: string) {
