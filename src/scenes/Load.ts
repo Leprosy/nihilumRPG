@@ -54,13 +54,14 @@ export class Load extends Scene3D {
           new Promise((res) => setTimeout(() => res(undefined), 100))
         ]);
 
-        if (result instanceof Texture) {
-          result.magFilter = THREE.NearestFilter;
-          result.minFilter = THREE.LinearMipMapLinearFilter;
-          arr.push(result as Texture);
-          ++index;
-        } else {
+        if (!result) {
           change = true;
+        } else {
+          const tex = result as Texture;
+          tex.magFilter = THREE.NearestFilter;
+          tex.minFilter = THREE.LinearMipMapLinearFilter;
+          arr.push(tex);
+          ++index;
         }
       }
 
