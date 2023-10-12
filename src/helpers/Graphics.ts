@@ -1,18 +1,19 @@
 import Phaser from "phaser";
 import { ExtendedObject3D, Scene3D, THREE } from "@enable3d/phaser-extension";
 import { Dungeon } from "../entities/Dungeon";
-import Third from "@enable3d/phaser-extension/dist/third";
-import { TextureMap } from "../types";
 import { GameConfig } from "../constants/config";
 
 export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
+  private static geometries: ExtendedObject3D[] = [];
   static size = 10;
 
-  static renderMap(geometries: ExtendedObject3D[], map: Dungeon, textures: TextureMap, third: Third) {
+  static renderMap(scene: Scene3D, map: Dungeon) { // TODO will this be called from other scene?
     // TODO refactor this shit!
-    geometries.forEach(item => item.removeFromParent());
-    geometries = [];
+    const third = scene.third;
+    const textures = scene.registry.get("textures");
+    this.geometries.forEach(item => item.removeFromParent());
+    this.geometries = [];
 
     for (let y = 0; y < map.getHeight(); ++y) {
       for (let x = 0; x < map.getWidth(); ++x) {
@@ -22,25 +23,25 @@ export class Graphics {
         const wall = map.walls[y][x];
 
         if (floor !== 0){
-          geometries.push(third.add.box(
+          this.geometries.push(third.add.box(
             { x: x * this.size, y: 0, z: y * this.size, height: this.size / 10, width: this.size, depth: this.size },
             { lambert: { map: textures.floor[floor - 1] } }));
         }
 
         if (ceiling !== 0){
-          geometries.push(third.add.box(
+          this.geometries.push(third.add.box(
             { x: x * this.size, y: this.size, z: y * this.size, height: this.size / 10, width: this.size, depth: this.size },
             { lambert: { map: textures.ceiling[ceiling - 1], transparent: true, opacity: 0.2 } }));
         }
 
         if (wall !== 0){
-          geometries.push(third.add.box(
+          this.geometries.push(third.add.box(
             { x: x * this.size, y: this.size / 2, z: y * this.size, height: this.size - this.size / 10, width: this.size, depth: this.size },
             { lambert: { map: textures.wall[wall - 1] } }));
         }
 
         if (object !== 0){
-          geometries.push(third.add.sphere(
+          this.geometries.push(third.add.sphere(
             { x: x * this.size, y: this.size / 2, z: y * this.size, radius: this.size / 5 },
             { lambert: { map: textures.wall[object - 1] } }));
         }
@@ -61,7 +62,6 @@ export class Graphics {
     });
     oaw.material.map.offset.x = 0;
     oaw.material.map.repeat.x = 0.25;
-
   }
 
   static message(scene: Scene3D, title: string, text: string) {

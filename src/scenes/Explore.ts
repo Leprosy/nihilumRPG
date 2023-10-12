@@ -1,4 +1,4 @@
-import { ExtendedObject3D, Scene3D } from "@enable3d/phaser-extension";
+import { Scene3D } from "@enable3d/phaser-extension";
 import { GameEvents, GameState, GameStatus } from "../types";
 import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
@@ -8,7 +8,6 @@ const GRID = 10; // TODO: decouple this const, is used in Graphics too
 
 export class Explore extends Scene3D {
   state: GameState;
-  geometries: ExtendedObject3D[];
   runner: ScriptRunner;
   lastKey: string;
 
@@ -16,15 +15,12 @@ export class Explore extends Scene3D {
     super("Explore");
     this.lastKey = "";
     this.runner = new ScriptRunner(this);
-    this.geometries = [];
   }
 
   init() {
     this.accessThirdDimension();
     this.third.renderer.setPixelRatio(5);
   }
-
-  preload() {}
 
   create() {
     this.state = this.registry.get("state");
@@ -62,7 +58,7 @@ export class Explore extends Scene3D {
   }
 
   drawMap() {
-    Graphics.renderMap(this.geometries, this.state.dungeon, this.registry.get("textures"), this.third);
+    Graphics.renderMap(this, this.state.dungeon);
   }
 
   updateScene() {
