@@ -19,7 +19,7 @@ class SimpleGame {
       parent: "content",
       scene: [Main, Explore, Load],
       title: GameConfig.name,
-      version: "0.1",
+      version: GameConfig.version,
       ...Canvas()
     };
 
