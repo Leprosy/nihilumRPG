@@ -1,6 +1,6 @@
 import { Game } from "..";
 import { Explore } from "../scenes/Explore";
-import { GameStatus, Script, GameEvents } from "../types";
+import { GameStatus, Script, GameEvents, GameState } from "../types";
 import { EventManager } from "./EventManager";
 import { Graphics } from "./Graphics";
 
@@ -63,7 +63,7 @@ export class ScriptRunner {
   }
 
   choice(data: any) {
-    const state = Game.registry.get("state");
+    const state: GameState = Game.registry.get("state");
     Graphics.message(this.scene, "Select an option", Object.keys(data.options).join(","));
 
     if (state.status != GameStatus.ScriptChoice) {
@@ -80,7 +80,7 @@ export class ScriptRunner {
   }
 
   changeDungeon(data: any) {
-    const state = Game.registry.get("state");
+    const state: GameState = Game.registry.get("state");
     state.status = GameStatus.Teleporting;
 
     EventManager.emit(GameEvents.LoadMap, {
@@ -89,7 +89,7 @@ export class ScriptRunner {
         try {
           const map = Game.cache.json.get("map");
           const start = map.startPoints[data.startPoint];
-          state.map.loadDungeon(map);
+          state.dungeon.loadDungeon(map);
           state.party.x = start.x;
           state.party.y = start.y;
           EventManager.emit(GameEvents.UpdateView);
@@ -104,7 +104,7 @@ export class ScriptRunner {
   }
 
   giveQuest(data: any) {
-    const state = Game.registry.get("state");
+    const state: GameState = Game.registry.get("state");
     console.log("giving quest:", data);
     state.quests.pushQuest(data.id, data.description);
     console.log("quests now:", state.quests);
@@ -113,7 +113,7 @@ export class ScriptRunner {
   }
 
   checkQuest(data: any) {
-    const state = Game.registry.get("state");
+    const state: GameState = Game.registry.get("state");
     console.log("quests are:", state.quests, "checking:", data);
     console.log("has quest?", state.quests.hasQuest(data.questID));
 
