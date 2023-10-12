@@ -32,7 +32,7 @@ export class Explore extends Scene3D {
     });
 
     // Key events
-    this.input.keyboard.on("keydown", event => {
+    this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
       this.lastKey = event.key;
 
       switch (this.state.status) {
@@ -71,6 +71,7 @@ export class Explore extends Scene3D {
   moveParty(event: KeyboardEvent) {
     const { party } = this.state;
 
+    // TODO is there a better way? (call a key f() from a registry object?)
     switch (event.key) {
       case "a":
         party.turnLeft();
