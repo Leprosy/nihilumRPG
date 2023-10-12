@@ -2,7 +2,7 @@ import { Scene3D, THREE } from "@enable3d/phaser-extension";
 import { Party } from "../entities/Party";
 import { Actor } from "../entities/Actor";
 import { Dungeon } from "../entities/Dungeon";
-import { GameEvents, GameState, Status, TextureMap, loadMapArgs } from "../types";
+import { GameEvents, GameState, GameStatus, TextureMap } from "../types";
 import { Texture } from "three/src/textures/Texture";
 import { QuestManager } from "../helpers/QuestManager";
 import { EventManager } from "../helpers/EventManager";
@@ -30,9 +30,9 @@ export class Load extends Scene3D {
     // TODO Load this from somewhere(saved game file)
     const state: GameState = {
       party: new Party([new Actor()]),
-      map: new Dungeon(this.cache.json.get("map")),
+      dungeon: new Dungeon(this.cache.json.get("map")),
       quests: new QuestManager(),
-      status: Status.Exploring
+      status: GameStatus.Exploring
     };
 
     // Loading 3d assets
@@ -84,6 +84,10 @@ export class Load extends Scene3D {
     this.scene.start("Explore");
   }
 
+
+  /*
+   * Loads a Map from a json file
+   */
   loadMap(args: loadMapArgs) {
     console.log("Load.loadMap: loadMap/is ready", this.load.isReady(), args);
 
@@ -104,4 +108,9 @@ export class Load extends Scene3D {
     this.cache.json.remove("map");
     this.load.json("map", `assets/maps/${args.dungeon}.json`).start();
   }
+}
+
+export type loadMapArgs = {
+  dungeon: string;
+  call: () => void;
 }
