@@ -1,6 +1,6 @@
 import { Game } from "..";
 import { Explore } from "../scenes/Explore";
-import { Status, Script, GameEvents } from "../types";
+import { GameStatus, Script, GameEvents } from "../types";
 import { EventManager } from "./EventManager";
 import { Graphics } from "./Graphics";
 
@@ -38,7 +38,7 @@ export class ScriptRunner {
 
     if (this.pointer >= this.script.code.length) {
       console.log("ScriptRunner.next: Script ended");
-      state.status = Status.Exploring;
+      state.status = GameStatus.Exploring;
       return;
     }
 
@@ -66,14 +66,14 @@ export class ScriptRunner {
     const state = Game.registry.get("state");
     Graphics.message(this.scene, "Select an option", Object.keys(data.options).join(","));
 
-    if (state.status != Status.ScriptChoice) {
-      state.status = Status.ScriptChoice;
+    if (state.status != GameStatus.ScriptChoice) {
+      state.status = GameStatus.ScriptChoice;
     } else {
       const option = data.options[this.scene.lastKey];
 
       if (option) {
         this.pointer = option;
-        state.status = Status.Script;
+        state.status = GameStatus.Script;
         this.next();
       }
     }
@@ -81,7 +81,7 @@ export class ScriptRunner {
 
   changeDungeon(data: any) {
     const state = Game.registry.get("state");
-    state.status = Status.Teleporting;
+    state.status = GameStatus.Teleporting;
 
     EventManager.emit(GameEvents.LoadMap, {
       dungeon: data.dungeon,
@@ -97,7 +97,7 @@ export class ScriptRunner {
           console.error("ScriptRunner.changeDungeon: Error changing dungeon", e);
         }
 
-        state.status = Status.Exploring;
+        state.status = GameStatus.Exploring;
         this.pointer++;
       }
     });

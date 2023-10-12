@@ -1,4 +1,7 @@
-import { Quest } from "../types";
+export type Quest = {
+  id: string;
+  description: string;
+}
 
 export class QuestManager {
   quests: Quest[];

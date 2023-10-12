@@ -1,10 +1,10 @@
 import { ExtendedObject3D, Scene3D } from "@enable3d/phaser-extension";
-import { GameEvents, GameState, Status } from "../types";
+import { GameEvents, GameState, GameStatus } from "../types";
 import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
 import { Graphics } from "../helpers/Graphics";
 
-const GRID = 10;
+const GRID = 10; // TODO: decouple this const, is used in Graphics too
 
 export class Explore extends Scene3D {
   state: GameState;
@@ -40,12 +40,12 @@ export class Explore extends Scene3D {
       this.lastKey = event.key;
 
       switch (this.state.status) {
-        case Status.Exploring:
+        case GameStatus.Exploring:
           this.moveParty(event);
           break;
 
-        case Status.Script:
-        case Status.ScriptChoice:
+        case GameStatus.Script:
+        case GameStatus.ScriptChoice:
           this.runner.next();
           break;
       }
@@ -62,7 +62,7 @@ export class Explore extends Scene3D {
   }
 
   drawMap() {
-    Graphics.renderMap(this.geometries, this.state.map, this.registry.get("textures"), this.third);
+    Graphics.renderMap(this.geometries, this.state.dungeon, this.registry.get("textures"), this.third);
   }
 
   updateScene() {
@@ -85,20 +85,20 @@ export class Explore extends Scene3D {
         break;
 
       case "w":
-        party.forward(this.state.map);
+        party.forward(this.state.dungeon);
         break;
 
       case "s":
-        party.backward(this.state.map);
+        party.backward(this.state.dungeon);
         break;
 
       case " ": {
         // TODO address inmediate events
-        const script = this.state.map.getScript(party.x, party.y);
+        const script = this.state.dungeon.getScript(party.x, party.y);
 
         if (script) {
           this.runner.setScript(script);
-          this.state.status = Status.Script;
+          this.state.status = GameStatus.Script;
           this.runner.next();
         }
 

@@ -5,12 +5,18 @@ import { Texture } from "three/src/textures/Texture";
 
 export type GameState = {
   party: Party;
-  map: Dungeon;
+  dungeon: Dungeon;
   quests: QuestManager;
-  status: Status;
+  status: GameStatus;
 }
 
-export enum Status {
+export enum GameEvents {
+  UpdateView = "UpdateView",
+  LoadMap = "LoadMap",
+  ScreenCommand = "ScreenCommand"
+}
+
+export enum GameStatus {
   Exploring,
   Teleporting,
   Script,
@@ -28,19 +34,4 @@ export type ScriptInstruction = {
   data?: any
 }
 
-export type Quest = {
-  id: string;
-  description: string;
-}
-
 export type TextureMap = Record<string, Texture[]>;
-
-export enum GameEvents {
-  UpdateView = "UpdateView",
-  LoadMap = "LoadMap"
-}
-
-export type loadMapArgs = {
-  dungeon: string;
-  call: () => void;
-}
