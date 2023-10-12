@@ -80,6 +80,7 @@ export class ScriptRunner {
   changeDungeon(data: any) {
     const state: GameState = Game.registry.get("state");
     state.status = GameStatus.Teleporting;
+    Graphics.message("Traveling...", "");
 
     EventManager.emit(GameEvents.LoadMap, {
       dungeon: data.dungeon,
@@ -91,6 +92,7 @@ export class ScriptRunner {
           state.party.x = start.x;
           state.party.y = start.y;
           EventManager.emit(GameEvents.UpdateView);
+          Graphics.clearMessage();
         } catch (e) {
           console.error("ScriptRunner.changeDungeon: Error changing dungeon", e);
         }
@@ -123,5 +125,4 @@ export class ScriptRunner {
 
     this.next();
   }
-
 }
