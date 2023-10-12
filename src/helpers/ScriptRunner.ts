@@ -4,8 +4,6 @@ import { GameStatus, Script, GameEvents, GameState } from "../types";
 import { EventManager } from "./EventManager";
 import { Graphics } from "./Graphics";
 
-
-
 type MessageParams = {
   message: string;
   title: string;
@@ -48,12 +46,12 @@ export class ScriptRunner {
   }
 
   message(data: MessageParams) {
-    Graphics.message(this.scene, data.title, data.message);
+    Graphics.message(data.title, data.message);
     this.pointer++;
   }
 
   dialog(data: DialogParams) {
-    Graphics.dialog(this.scene, data.title, data.message, data.face);
+    Graphics.dialog(data.title, data.message, data.face);
     this.pointer++;
   }
 
@@ -64,7 +62,7 @@ export class ScriptRunner {
 
   choice(data: any) {
     const state: GameState = Game.registry.get("state");
-    Graphics.message(this.scene, "Select an option", Object.keys(data.options).join(","));
+    Graphics.message("Select an option", Object.keys(data.options).join(","));
 
     if (state.status != GameStatus.ScriptChoice) {
       state.status = GameStatus.ScriptChoice;

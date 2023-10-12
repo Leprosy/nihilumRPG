@@ -1,14 +1,21 @@
-import Phaser from "phaser";
+import Phaser, { Scene } from "phaser";
 import { ExtendedObject3D, Scene3D, THREE } from "@enable3d/phaser-extension";
 import { Dungeon } from "../entities/Dungeon";
 import { GameConfig } from "../constants/config";
+import { Game } from "..";
 
 export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
   private static geometries: ExtendedObject3D[] = [];
   static size = 10;
 
-  static renderMap(scene: Scene3D, map: Dungeon) { // TODO will this be called from other scene?
+  private static getScene(): Scene3D {
+    return Game.scene.getScenes(true)[0] as Scene3D;
+  }
+
+  static renderMap(map: Dungeon) {
+    const scene = this.getScene();
+
     // TODO refactor this shit!
     const third = scene.third;
     const textures = scene.registry.get("textures");
@@ -64,7 +71,8 @@ export class Graphics {
     oaw.material.map.repeat.x = 0.25;
   }
 
-  static message(scene: Scene3D, title: string, text: string) {
+  static message(title: string, text: string) {
+    const scene = this.getScene();
     this.currentMessage = scene.add.group();
     this.currentMessage.add(scene.add.rectangle(GameConfig.width / 2, GameConfig.height / 2, 400, 300, 0xdcc072));
     this.currentMessage.add(
@@ -80,7 +88,8 @@ export class Graphics {
     window.oaw = this.currentMessage;
   }
 
-  static dialog(scene: Scene3D, title: string, text: string, face: string) {
+  static dialog(title: string, text: string, face: string) {
+    const scene = this.getScene();
     this.currentMessage = scene.add.group();
     this.currentMessage.add(scene.add.rectangle(GameConfig.width / 2, GameConfig.height / 2, 400, 300, 0xdcc072));
     this.currentMessage.add(

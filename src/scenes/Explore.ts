@@ -25,13 +25,9 @@ export class Explore extends Scene3D {
   create() {
     this.state = this.registry.get("state");
 
-    // External events
-    EventManager.on(GameEvents.UpdateView, () => {
-      this.drawMap();
-      this.updateScene();
-    });
+    // Events
+    this.events.on("create", () => this.drawMap());
 
-    // Key events
     this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
       this.lastKey = event.key;
 
@@ -49,16 +45,20 @@ export class Explore extends Scene3D {
       this.updateScene();
     });
 
+    EventManager.on(GameEvents.UpdateView, () => {
+      this.drawMap();
+      this.updateScene();
+    });
+
     // 3d scene
     this.third.warpSpeed("-ground", "-sky");
-    this.drawMap();
 
     // First set
     this.updateScene();
   }
 
   drawMap() {
-    Graphics.renderMap(this, this.state.dungeon);
+    Graphics.renderMap(this.state.dungeon);
   }
 
   updateScene() {
