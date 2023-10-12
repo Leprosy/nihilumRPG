@@ -68,7 +68,7 @@ export class Explore extends Scene3D {
     this.third.camera.lookAt(forward.x * GRID, GRID / 2, forward.y * GRID);
   }
 
-  moveParty(event) {
+  moveParty(event: KeyboardEvent) {
     const { party } = this.state;
 
     switch (event.key) {
