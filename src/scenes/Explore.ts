@@ -8,10 +8,12 @@ import { GameConfig } from "../constants/config";
 export class Explore extends Scene3D {
   state: GameState;
   lastKey: string;
+  isMoving: boolean;
 
   constructor() {
     super("Explore");
     this.lastKey = "";
+    this.isMoving = false;
   }
 
   init() {
@@ -26,20 +28,22 @@ export class Explore extends Scene3D {
     this.events.on("create", () => this.drawMap());
 
     this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
-      this.lastKey = event.key;
+      if (!this.isMoving) {
+        this.lastKey = event.key;
 
-      switch (this.state.status) {
-        case GameStatus.Exploring:
-          this.moveParty(event);
-          break;
+        switch (this.state.status) {
+          case GameStatus.Exploring:
+            this.moveParty(event);
+            this.updateScene();
+            break;
 
-        case GameStatus.Script:
-        case GameStatus.ScriptChoice:
-          ScriptRunner.next({ lastKey: this.lastKey });
-          break;
+          case GameStatus.Script:
+          case GameStatus.ScriptChoice:
+            ScriptRunner.next({ lastKey: this.lastKey });
+            break;
+        }
+
       }
-
-      this.updateScene();
     });
 
     EventManager.on(GameEvents.UpdateView, () => {
@@ -59,14 +63,40 @@ export class Explore extends Scene3D {
   }
 
   updateScene() {
+    this.isMoving = true;
     const size = GameConfig.gridSize;
+    const resolution = 5;
     const forward = this.state.party.getForward();
     const backward = this.state.party.getBackward();
 
-
-
-    this.third.camera.position.set(backward.x * size, size / 2, backward.y * size);
+    const pos1 = this.third.camera.position;
+    const pos2 = backward;
+    const dx = ((pos2.x * size) - pos1.x) / resolution;
+    const dz = ((pos2.y * size) - pos1.z) / resolution;
+    let i = 0;
+    const cam2 = this.third.camera.clone();
+    cam2.lookAt(forward.x * size, size / 2, forward.y * size);
+    console.log({ cam2: cam2.rotation.toArray(), cam1: this.third.camera.rotation.toArray() });
     this.third.camera.lookAt(forward.x * size, size / 2, forward.y * size);
+
+
+    console.log({ x1: pos1.x, z1: pos1.z, x2: pos2.x, z2: pos2.y, dx, dz });
+
+    const fx = () => {
+      if (i++ < resolution) {
+        this.third.camera.position.setX(pos1.x + dx);
+        this.third.camera.position.setZ(pos1.z + dz);
+        console.log("Explore.UpdateScene: Moving...");
+        setTimeout(fx, 100 / resolution);
+      } else {
+        this.third.camera.position.set(backward.x * size, size / 2, backward.y * size);
+        this.third.camera.lookAt(forward.x * size, size / 2, forward.y * size);
+        this.isMoving = false;
+        console.log("Explore.UpdateScene: Done moving.");
+      }
+    };
+
+    setTimeout(fx,  100 / resolution);
   }
 
   moveParty(event: KeyboardEvent) {
