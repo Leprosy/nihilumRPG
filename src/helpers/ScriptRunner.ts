@@ -1,5 +1,4 @@
 import { Game } from "..";
-import { Explore } from "../scenes/Explore";
 import { GameStatus, Script, GameEvents, GameState } from "../types";
 import { EventManager } from "./EventManager";
 import { Graphics } from "./Graphics";
@@ -13,24 +12,19 @@ type DialogParams = MessageParams & {
   face: string;
 }
 
-type CommandParams = MessageParams | DialogParams;
+
+
 
 export class ScriptRunner {
-  script: Script;
-  scene: Explore; // TODO: Finish decoupling this from Explore
-  pointer: number;
+  private static script: Script;
+  private static pointer: number;
 
-  constructor(scene: Explore) {
-    this.scene = scene;
-    this.pointer = 0;
-  }
-
-  setScript(script: Script) {
+  static setScript(script: Script) {
     this.pointer = 0;
     this.script = script;
   }
 
-  next() {
+  static next(extraData?: any) {
     const state = Game.registry.get("state");
     Graphics.clearMessage();
 
@@ -41,33 +35,34 @@ export class ScriptRunner {
     }
 
     const { command, data } = this.script.code[this.pointer];
-    console.log("ScriptRunner: Running", { pointer: this.pointer, command, data });
-    this[command](data);
+    const args = { ...data, ...extraData };
+    console.log("ScriptRunner: Running", { pointer: this.pointer, command, args });
+    this[command](args);
   }
 
-  message(data: MessageParams) {
+  static message(data: MessageParams) {
     Graphics.message(data.title, data.message);
     this.pointer++;
   }
 
-  dialog(data: DialogParams) {
+  static dialog(data: DialogParams) {
     Graphics.dialog(data.title, data.message, data.face);
     this.pointer++;
   }
 
-  endScript() {
+  static endScript() {
     this.pointer = this.script.code.length;
     this.next();
   }
 
-  choice(data: any) {
+  static choice(data: any) {
     const state: GameState = Game.registry.get("state");
     Graphics.message("Select an option", Object.keys(data.options).join(","));
 
     if (state.status != GameStatus.ScriptChoice) {
       state.status = GameStatus.ScriptChoice;
     } else {
-      const option = data.options[this.scene.lastKey];
+      const option = 0; // TODO fuck! data.options[this.scene.lastKey];
 
       if (option) {
         this.pointer = option;
@@ -77,7 +72,7 @@ export class ScriptRunner {
     }
   }
 
-  changeDungeon(data: any) {
+  static changeDungeon(data: any) {
     const state: GameState = Game.registry.get("state");
     state.status = GameStatus.Teleporting;
     Graphics.message("Traveling...", "");
@@ -103,7 +98,7 @@ export class ScriptRunner {
     });
   }
 
-  giveQuest(data: any) {
+  static giveQuest(data: any) {
     const state: GameState = Game.registry.get("state");
     console.log("giving quest:", data);
     state.quests.pushQuest(data.id, data.description);
@@ -112,7 +107,7 @@ export class ScriptRunner {
     this.next();
   }
 
-  checkQuest(data: any) {
+  static checkQuest(data: any) {
     const state: GameState = Game.registry.get("state");
     console.log("quests are:", state.quests, "checking:", data);
     console.log("has quest?", state.quests.hasQuest(data.questID));

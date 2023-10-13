@@ -8,13 +8,11 @@ const GRID = 10; // TODO: decouple this const, is used in Graphics too
 
 export class Explore extends Scene3D {
   state: GameState;
-  runner: ScriptRunner;
   lastKey: string;
 
   constructor() {
     super("Explore");
     this.lastKey = "";
-    this.runner = new ScriptRunner(this);
   }
 
   init() {
@@ -38,7 +36,7 @@ export class Explore extends Scene3D {
 
         case GameStatus.Script:
         case GameStatus.ScriptChoice:
-          this.runner.next();
+          ScriptRunner.next({ lastKey: this.lastKey });
           break;
       }
 
@@ -94,9 +92,9 @@ export class Explore extends Scene3D {
         const script = this.state.dungeon.getScript(party.x, party.y);
 
         if (script) {
-          this.runner.setScript(script);
+          ScriptRunner.setScript(script);
           this.state.status = GameStatus.Script;
-          this.runner.next();
+          ScriptRunner.next({ lastKey: this.lastKey });
         }
 
         break;
