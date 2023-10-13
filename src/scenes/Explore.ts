@@ -3,8 +3,7 @@ import { GameEvents, GameState, GameStatus } from "../types";
 import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
 import { Graphics } from "../helpers/Graphics";
-
-const GRID = 10; // TODO: decouple this const, is used in Graphics too
+import { GameConfig } from "../constants/config";
 
 export class Explore extends Scene3D {
   state: GameState;
@@ -60,10 +59,14 @@ export class Explore extends Scene3D {
   }
 
   updateScene() {
+    const size = GameConfig.gridSize;
     const forward = this.state.party.getForward();
     const backward = this.state.party.getBackward();
-    this.third.camera.position.set(backward.x * GRID, GRID / 2, backward.y * GRID);
-    this.third.camera.lookAt(forward.x * GRID, GRID / 2, forward.y * GRID);
+
+
+
+    this.third.camera.position.set(backward.x * size, size / 2, backward.y * size);
+    this.third.camera.lookAt(forward.x * size, size / 2, forward.y * size);
   }
 
   moveParty(event: KeyboardEvent) {

@@ -7,7 +7,6 @@ import { Game } from "..";
 export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
   private static geometries: ExtendedObject3D[] = [];
-  static size = 10;
 
   private static getScene(): Scene3D {
     return Game.scene.getScenes(true)[0] as Scene3D;
@@ -18,6 +17,7 @@ export class Graphics {
 
     // TODO refactor this shit!
     const third = scene.third;
+    const size = GameConfig.gridSize;
     const textures = scene.registry.get("textures");
     this.geometries.forEach(item => item.removeFromParent());
     this.geometries = [];
@@ -31,36 +31,36 @@ export class Graphics {
 
         if (floor !== 0){
           this.geometries.push(third.add.box(
-            { x: x * this.size, y: 0, z: y * this.size, height: this.size / 10, width: this.size, depth: this.size },
+            { x: x * size, y: 0, z: y * size, height: size / 10, width: size, depth: size },
             { lambert: { map: textures.floor[floor - 1] } }));
         }
 
         if (ceiling !== 0){
           this.geometries.push(third.add.box(
-            { x: x * this.size, y: this.size, z: y * this.size, height: this.size / 10, width: this.size, depth: this.size },
+            { x: x * size, y: size, z: y * size, height: size / 10, width: size, depth: size },
             { lambert: { map: textures.ceiling[ceiling - 1], transparent: true, opacity: 0.2 } }));
         }
 
         if (wall !== 0){
           this.geometries.push(third.add.box(
-            { x: x * this.size, y: this.size / 2, z: y * this.size, height: this.size - this.size / 10, width: this.size, depth: this.size },
+            { x: x * size, y: size / 2, z: y * size, height: size - size / 10, width: size, depth: size },
             { lambert: { map: textures.wall[wall - 1] } }));
         }
 
         if (object !== 0){
           this.geometries.push(third.add.sphere(
-            { x: x * this.size, y: this.size / 2, z: y * this.size, radius: this.size / 5 },
+            { x: x * size, y: size / 2, z: y * size, radius: size / 5 },
             { lambert: { map: textures.wall[object - 1] } }));
         }
       }
     }
 
     // Sky dome
-    third.add.sphere({ x: 0, y: 0, z: 0, radius: this.size * 100 },
+    third.add.sphere({ x: 0, y: 0, z: 0, radius: size * 100 },
       { lambert: { map: textures.sky[0], side: THREE.BackSide } });
 
     // Monsters
-    const monsterSize = this.size * 0.9;
+    const monsterSize = size * 0.9;
     window.oaw = third.add.plane({
       x: 0, y: monsterSize / 2, z: 0, height: monsterSize, width: monsterSize / 2
     },
