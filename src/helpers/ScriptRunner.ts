@@ -11,6 +11,7 @@ type MessageParams = {
 type DialogParams = MessageParams & {
   face: string;
 }
+//TODO is this worth the time?
 
 
 
@@ -62,7 +63,7 @@ export class ScriptRunner {
     if (state.status != GameStatus.ScriptChoice) {
       state.status = GameStatus.ScriptChoice;
     } else {
-      const option = 0; // TODO fuck! data.options[this.scene.lastKey];
+      const option = data.options[data.lastKey];
 
       if (option) {
         this.pointer = option;
