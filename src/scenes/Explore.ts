@@ -64,39 +64,31 @@ export class Explore extends Scene3D {
 
   updateScene() {
     this.isMoving = true;
+    const camera = this.third.camera;
     const size = GameConfig.gridSize;
     const resolution = 5;
-    const forward = this.state.party.getForward();
+    const delay = 100 / resolution;
     const backward = this.state.party.getBackward();
 
-    const pos1 = this.third.camera.position;
-    const pos2 = backward;
-    const dx = ((pos2.x * size) - pos1.x) / resolution;
-    const dz = ((pos2.y * size) - pos1.z) / resolution;
+    const dx = ((backward.x * size) - camera.position.x) / resolution;
+    const dz = ((backward.y * size) - camera.position.z) / resolution;
+
     let i = 0;
-    const cam2 = this.third.camera.clone();
-    cam2.lookAt(forward.x * size, size / 2, forward.y * size);
-    console.log({ cam2: cam2.rotation.toArray(), cam1: this.third.camera.rotation.toArray() });
-    this.third.camera.lookAt(forward.x * size, size / 2, forward.y * size);
-
-
-    console.log({ x1: pos1.x, z1: pos1.z, x2: pos2.x, z2: pos2.y, dx, dz });
 
     const fx = () => {
       if (i++ < resolution) {
-        this.third.camera.position.setX(pos1.x + dx);
-        this.third.camera.position.setZ(pos1.z + dz);
-        console.log("Explore.UpdateScene: Moving...");
-        setTimeout(fx, 100 / resolution);
+        camera.position.setX(camera.position.x + dx);
+        camera.position.setZ(camera.position.z + dz);
+        setTimeout(fx, delay);
       } else {
-        this.third.camera.position.set(backward.x * size, size / 2, backward.y * size);
-        this.third.camera.lookAt(forward.x * size, size / 2, forward.y * size);
+        camera.position.set(backward.x * size, size / 2, backward.y * size);
         this.isMoving = false;
-        console.log("Explore.UpdateScene: Done moving.");
       }
+
+      camera.lookAt(this.state.party.x * size, size / 2, this.state.party.y * size);
     };
 
-    setTimeout(fx,  100 / resolution);
+    setTimeout(fx, delay);
   }
 
   moveParty(event: KeyboardEvent) {
