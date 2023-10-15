@@ -68,9 +68,14 @@ export class Load extends Scene3D {
       textures[key] = arr;
     }
 
-    // Debug monster
+    // Debug monster & object
     textures.monster = await Promise.all([this.third.load.texture("/assets/img/objects/mon0.png")]);
     textures.monster.forEach(item => {
+      item.magFilter = THREE.NearestFilter;
+      item.minFilter = THREE.LinearMipMapLinearFilter;
+    });
+    textures.object = await Promise.all([this.third.load.texture("/assets/img/objects/obj1.png")]);
+    textures.object.forEach(item => {
       item.magFilter = THREE.NearestFilter;
       item.minFilter = THREE.LinearMipMapLinearFilter;
     });

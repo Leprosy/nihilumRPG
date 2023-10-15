@@ -8,6 +8,7 @@ export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
   private static geometries: ExtendedObject3D[] = [];
   private static objects: ExtendedObject3D[] = [];
+  private static maps = new Set();
 
   private static getScene(): Scene3D {
     return Game.scene.getScenes(true)[0] as Scene3D;
@@ -51,9 +52,16 @@ export class Graphics {
         }
 
         if (object !== 0){
-          this.geometries.push(third.add.sphere(
-            { x: x * size, y: size / 2, z: y * size, radius: size / 5 },
-            { lambert: { map: textures.wall[object - 1] } }));
+          const object = third.add.plane({
+            x: x * size, y: size / 2, z: y * size, height: size * 0.9, width: size * 0.9
+          },
+          {
+            lambert: { map: textures.object[0], side: THREE.DoubleSide, transparent: true }
+          });
+          object.material.map.offset.x = 0;
+          object.material.map.repeat.x = object.material.map.source.data.height / object.material.map.source.data.width;
+          this.objects.push(object);
+          this.maps.add(object.material.map);
         }
       }
     }
@@ -65,21 +73,36 @@ export class Graphics {
     // Monsters
     const monsterSize = size * 0.9;
     const monster = third.add.plane({
-      x: 0, y: monsterSize / 2, z: 0, height: monsterSize, width: monsterSize / 2
+      x: size, y: monsterSize / 2, z: 0, height: monsterSize, width: monsterSize
     },
     {
       lambert: { map: textures.monster[0], side: THREE.DoubleSide, transparent: true }
     });
     monster.material.map.offset.x = 0;
     monster.material.map.repeat.x = 0.25;
-
     this.objects.push(monster);
+    this.maps.add(monster.material.map);
+
+    setInterval(() => Graphics.updateObjectAnimation(), 250);
+    window.oaw = this.maps;
   }
 
   static rotateFix(factor: number) {
-    const scene = this.getScene();
     this.objects.forEach((item: ExtendedObject3D) => {
       item.rotateY(Math.PI / 2 * factor);
+    });
+  }
+
+  static updateObjectAnimation() {
+    this.maps.forEach((item: any) => {
+      const height = item.source.data.height;
+      const width = item.source.data.width;
+
+      console.log({ width, height, item });
+
+      if (height !== width) {
+        item.offset.x = (item.offset.x + 1 / (width / height)) % 1;
+      }
     });
   }
 
