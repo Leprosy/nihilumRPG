@@ -52,16 +52,16 @@ export class Graphics {
         }
 
         if (object !== 0){
-          const object = third.add.plane({
+          const obj = third.add.plane({
             x: x * size, y: size / 2, z: y * size, height: size * 0.9, width: size * 0.9
           },
           {
-            lambert: { map: textures.object[0], side: THREE.DoubleSide, transparent: true }
+            lambert: { map: textures.object[object - 1], side: THREE.DoubleSide, transparent: true }
           });
-          object.material.map.offset.x = 0;
-          object.material.map.repeat.x = object.material.map.source.data.height / object.material.map.source.data.width;
-          this.objects.push(object);
-          this.maps.add(object.material.map);
+          obj.material.map.offset.x = 0;
+          obj.material.map.repeat.x = obj.material.map.source.data.height / obj.material.map.source.data.width;
+          this.objects.push(obj);
+          this.maps.add(obj.material.map);
         }
       }
     }
@@ -87,18 +87,18 @@ export class Graphics {
     window.oaw = this.maps;
   }
 
+
   static rotateFix(factor: number) {
     this.objects.forEach((item: ExtendedObject3D) => {
       item.rotateY(Math.PI / 2 * factor);
     });
   }
 
+
   static updateObjectAnimation() {
     this.maps.forEach((item: any) => {
       const height = item.source.data.height;
       const width = item.source.data.width;
-
-      console.log({ width, height, item });
 
       if (height !== width) {
         item.offset.x = (item.offset.x + 1 / (width / height)) % 1;

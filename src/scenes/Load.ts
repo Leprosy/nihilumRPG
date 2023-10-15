@@ -36,7 +36,12 @@ export class Load extends Scene3D {
     };
 
     // Loading 3d assets
-    const keys = ["floor", "wall", "object", "ceiling", "sky"];
+    const keyMap = {
+      "floor": "/assets/img/textures/", "wall": "/assets/img/textures/",
+      "ceiling": "/assets/img/textures/", "sky": "/assets/img/textures/",
+      "monster": "/assets/img/monsters/", "object": "/assets/img/objects/"
+    };
+    const keys = Object.keys(keyMap);
     const textures: TextureMap = {};
 
     for (let j = 0; j < keys.length; ++j) {
@@ -46,15 +51,18 @@ export class Load extends Scene3D {
       const key = keys[j];
 
       while (!change) {
-        const txtName = `/assets/img/textures/${key}${index}.png`;
+        const txtName = `${keyMap[key]}${key}${index}.png`;
         console.log("Load: loading texture", txtName);
 
         const result: Texture | unknown = await Promise.race([
           this.third.load.texture(txtName),
-          new Promise((res) => setTimeout(() => res(undefined), 100))
+          new Promise((res) => setTimeout(() => {
+            res(undefined);
+          }, 100))
         ]);
 
         if (!result) {
+          console.log("Load: texture not found", txtName);
           change = true;
         } else {
           const tex = result as Texture;
@@ -67,18 +75,6 @@ export class Load extends Scene3D {
 
       textures[key] = arr;
     }
-
-    // Debug monster & object
-    textures.monster = await Promise.all([this.third.load.texture("/assets/img/objects/mon0.png")]);
-    textures.monster.forEach(item => {
-      item.magFilter = THREE.NearestFilter;
-      item.minFilter = THREE.LinearMipMapLinearFilter;
-    });
-    textures.object = await Promise.all([this.third.load.texture("/assets/img/objects/obj1.png")]);
-    textures.object.forEach(item => {
-      item.magFilter = THREE.NearestFilter;
-      item.minFilter = THREE.LinearMipMapLinearFilter;
-    });
 
     // Register map load event
     EventManager.on(GameEvents.LoadMap, (args) => this.loadMap(args));
