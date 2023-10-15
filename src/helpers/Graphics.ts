@@ -7,6 +7,7 @@ import { Game } from "..";
 export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
   private static geometries: ExtendedObject3D[] = [];
+  private static objects: ExtendedObject3D[] = [];
 
   private static getScene(): Scene3D {
     return Game.scene.getScenes(true)[0] as Scene3D;
@@ -20,7 +21,9 @@ export class Graphics {
     const size = GameConfig.gridSize;
     const textures = scene.registry.get("textures");
     this.geometries.forEach(item => item.removeFromParent());
+    this.objects.forEach(item => item.removeFromParent());
     this.geometries = [];
+    this.objects = [];
 
     for (let y = 0; y < map.getHeight(); ++y) {
       for (let x = 0; x < map.getWidth(); ++x) {
@@ -61,14 +64,23 @@ export class Graphics {
 
     // Monsters
     const monsterSize = size * 0.9;
-    window.oaw = third.add.plane({
+    const monster = third.add.plane({
       x: 0, y: monsterSize / 2, z: 0, height: monsterSize, width: monsterSize / 2
     },
     {
       lambert: { map: textures.monster[0], side: THREE.DoubleSide, transparent: true }
     });
-    oaw.material.map.offset.x = 0;
-    oaw.material.map.repeat.x = 0.25;
+    monster.material.map.offset.x = 0;
+    monster.material.map.repeat.x = 0.25;
+
+    this.objects.push(monster);
+  }
+
+  static rotateFix(factor: number) {
+    const scene = this.getScene();
+    this.objects.forEach((item: ExtendedObject3D) => {
+      item.rotateY(Math.PI / 2 * factor);
+    });
   }
 
   static message(title: string, text: string) {

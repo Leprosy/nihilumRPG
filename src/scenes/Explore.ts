@@ -98,10 +98,12 @@ export class Explore extends Scene3D {
     switch (event.key) {
       case "a":
         party.turnLeft();
+        Graphics.rotateFix(1);
         break;
 
       case "d":
         party.turnRight();
+        Graphics.rotateFix(-1);
         break;
 
       case "w":
