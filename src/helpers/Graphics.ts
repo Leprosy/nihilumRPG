@@ -9,6 +9,7 @@ export class Graphics {
   private static geometries: ExtendedObject3D[] = [];
   private static objects: ExtendedObject3D[] = [];
   private static maps = new Set();
+  private static updateID;
 
   private static getScene(): Scene3D {
     return Game.scene.getScenes(true)[0] as Scene3D;
@@ -25,6 +26,7 @@ export class Graphics {
     this.objects.forEach(item => item.removeFromParent());
     this.geometries = [];
     this.objects = [];
+    clearInterval(this.updateID);
 
     for (let y = 0; y < map.getHeight(); ++y) {
       for (let x = 0; x < map.getWidth(); ++x) {
@@ -42,7 +44,7 @@ export class Graphics {
         if (ceiling !== 0){
           this.geometries.push(third.add.box(
             { x: x * size, y: size, z: y * size, height: size / 10, width: size, depth: size },
-            { lambert: { map: textures.ceiling[ceiling - 1], transparent: true, opacity: 0.2 } }));
+            { lambert: { map: textures.ceiling[ceiling - 1] } }));
         }
 
         if (wall !== 0){
@@ -68,7 +70,7 @@ export class Graphics {
 
     // Sky dome
     third.add.sphere({ x: 0, y: 0, z: 0, radius: size * 100 },
-      { lambert: { map: textures.sky[0], side: THREE.BackSide } });
+      { lambert: { map: textures.sky[1], side: THREE.BackSide } });
 
     // Monsters
     const monsterSize = size * 0.9;
@@ -83,12 +85,14 @@ export class Graphics {
     this.objects.push(monster);
     this.maps.add(monster.material.map);
 
-    setInterval(() => Graphics.updateObjectAnimation(), 250);
+    this.updateID = setInterval(() => Graphics.updateObjectAnimation(), 250);
     window.oaw = this.maps;
   }
 
 
   static rotateFix(factor: number) {
+    const scene = this.getScene();
+    console.log(scene.third.camera.rotation);
     this.objects.forEach((item: ExtendedObject3D) => {
       item.rotateY(Math.PI / 2 * factor);
     });
