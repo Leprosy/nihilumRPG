@@ -30,12 +30,37 @@
     [ 1, 1, 1, 1, 1 ]
   ],
   "scripts": {
-    "0x4": {
-      "inmediate": true,
+    "3x2": {
+      "inmediate": false,
       "code": [
         {
-          "command": "display",
-          "data": "Hello world!"
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "Do you want to return?" }
+        },
+        {
+          "command": "choice",
+          "data": {
+            "text": "Are you ready?",
+            "options": {
+              "n": 2,
+              "y": 4
+            }
+          }
+        },
+        {
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "Stay here then..." }
+        },
+        {
+          "command": "endScript"
+        },
+        {
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "Get ready..." }
+        },
+        {
+          "command": "changeDungeon",
+          "data": { "dungeon": "map0", "startPoint": 0 }
         }
       ]
     }
