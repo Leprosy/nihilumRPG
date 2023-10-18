@@ -83,6 +83,7 @@ export class Explore extends Scene3D {
       } else {
         camera.position.set(backward.x * size, size / 2, backward.y * size);
         this.isMoving = false;
+        Graphics.rotateFix();
       }
 
       camera.lookAt(this.state.party.x * size, size / 2, this.state.party.y * size);
@@ -98,12 +99,12 @@ export class Explore extends Scene3D {
     switch (event.key) {
       case "a":
         party.turnLeft();
-        Graphics.rotateFix(1);
+        Graphics.rotateFix();
         break;
 
       case "d":
         party.turnRight();
-        Graphics.rotateFix(-1);
+        Graphics.rotateFix();
         break;
 
       case "w":

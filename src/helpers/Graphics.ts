@@ -84,17 +84,14 @@ export class Graphics {
     monster.material.map.repeat.x = 0.25;
     this.objects.push(monster);
     this.maps.add(monster.material.map);
-
     this.updateID = setInterval(() => Graphics.updateObjectAnimation(), 250);
-    window.oaw = this.maps;
   }
 
 
-  static rotateFix(factor: number) {
+  static rotateFix() {
     const scene = this.getScene();
-    console.log(scene.third.camera.rotation);
     this.objects.forEach((item: ExtendedObject3D) => {
-      item.rotateY(Math.PI / 2 * factor);
+      item.rotation.setFromQuaternion(scene.third.camera.quaternion);
     });
   }
 
@@ -123,8 +120,6 @@ export class Graphics {
         .setOrigin(0.5, 0)
         .setTint(0x330000)
         .setFontSize(24));
-
-    window.oaw = this.currentMessage;
   }
 
   static dialog(title: string, text: string, face: string) {
