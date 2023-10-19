@@ -3,7 +3,7 @@ import { Script } from "../types";
 
 export class Dungeon {
   name: string;
-
+  sky: number;
   floors: number[][];
   ceilings: number[][];
   objects: number[][];
@@ -18,6 +18,7 @@ export class Dungeon {
   loadDungeon(data: any) {
     console.log("loading", data);
     try {
+      this.sky = data.sky;
       this.name = data.name;
       this.floors = data.floors;
       this.ceilings = data.ceilings;

@@ -73,7 +73,7 @@ export class Graphics {
 
     // Sky dome
     third.add.sphere({ x: 0, y: 0, z: 0, radius: size * 100 },
-      { lambert: { map: textures.sky[1], side: THREE.BackSide } });
+      { lambert: { map: textures.sky[map.sky], side: THREE.BackSide } });
 
     // Monsters
     monsters.forEach((item: Monster) => {

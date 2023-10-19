@@ -1,5 +1,6 @@
 {
   "name": "Entry",
+  "sky": 0,
   "startPoints": [ { "x": 0, "y": 0 } ],
   "floors": [
     [ 1, 1, 1, 1, 1 ],
