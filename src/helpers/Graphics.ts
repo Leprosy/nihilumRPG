@@ -23,7 +23,8 @@ export class Graphics {
     const third = scene.third;
     const size = GameConfig.gridSize;
     const textures = scene.registry.get("textures");
-    const objectSize = size * 0.9;
+    const objectSize = size * 0.8;
+    const floorSize = size / 10;
 
     this.geometries.forEach(item => item.removeFromParent());
     this.objects.forEach(item => item.removeFromParent());
@@ -40,25 +41,25 @@ export class Graphics {
 
         if (floor !== 0){
           this.geometries.push(third.add.box(
-            { x: x * size, y: 0, z: y * size, height: size / 10, width: size, depth: size },
+            { x: x * size, y: 0, z: y * size, height: floorSize, width: size, depth: size },
             { lambert: { map: textures.floor[floor - 1] } }));
         }
 
         if (ceiling !== 0){
           this.geometries.push(third.add.box(
-            { x: x * size, y: size, z: y * size, height: size / 10, width: size, depth: size },
+            { x: x * size, y: size, z: y * size, height: floorSize, width: size, depth: size },
             { lambert: { map: textures.ceiling[ceiling - 1] } }));
         }
 
         if (wall !== 0){
           this.geometries.push(third.add.box(
-            { x: x * size, y: size / 2, z: y * size, height: size - size / 10, width: size, depth: size },
+            { x: x * size, y: size / 2, z: y * size, height: size - floorSize, width: size, depth: size },
             { lambert: { map: textures.wall[wall - 1] } }));
         }
 
         if (object !== 0){
           const obj = third.add.plane({
-            x: x * size, y: size / 2, z: y * size, height: objectSize, width: objectSize
+            x: x * size, y: objectSize / 2 + floorSize / 2, z: y * size, height: objectSize, width: objectSize
           },
           {
             lambert: { map: textures.object[object - 1], side: THREE.DoubleSide, transparent: true }
@@ -78,7 +79,7 @@ export class Graphics {
     // Monsters
     monsters.forEach((item: Monster) => {
       const monster = third.add.plane({
-        x: size * item.x, y: objectSize / 2, z: size * item.y, height: objectSize, width: objectSize
+        x: size * item.x, y: objectSize / 2 + floorSize / 2, z: size * item.y, height: objectSize, width: objectSize
       },
       {
         lambert: { map: textures.monster[item.id], side: THREE.DoubleSide, transparent: true }
