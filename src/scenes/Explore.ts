@@ -84,6 +84,7 @@ export class Explore extends Scene3D {
       if (i++ < resolution) {
         camera.position.setX(camera.position.x + dx);
         camera.position.setZ(camera.position.z + dz);
+        Graphics.rotateFix();
         setTimeout(fx, delay);
       } else {
         camera.position.set(backward.x * size, size / 2, backward.y * size);
