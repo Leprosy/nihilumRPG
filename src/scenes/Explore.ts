@@ -4,11 +4,13 @@ import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
 import { Graphics } from "../helpers/Graphics";
 import { GameConfig } from "../constants/config";
+import { Monster } from "../entities/Monster";
 
 export class Explore extends Scene3D {
   state: GameState;
   lastKey: string;
   isMoving: boolean;
+  monsters: Monster[];
 
   constructor() {
     super("Explore");
@@ -25,7 +27,7 @@ export class Explore extends Scene3D {
     this.state = this.registry.get("state");
 
     // Events
-    this.events.on("create", () => this.drawMap());
+    this.events.on("create", () => this.generateMap());
 
     this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
       if (!this.isMoving) {
@@ -47,7 +49,7 @@ export class Explore extends Scene3D {
     });
 
     EventManager.on(GameEvents.UpdateView, () => {
-      this.drawMap();
+      this.generateMap();
       this.updateScene();
     });
 
@@ -58,8 +60,11 @@ export class Explore extends Scene3D {
     this.updateScene();
   }
 
-  drawMap() {
-    Graphics.renderMap(this.state.dungeon);
+  generateMap() {
+    this.monsters = [
+      new Monster(1, 0, 0), new Monster(2, 0, 0), new Monster(3, 1, 1)
+    ];
+    Graphics.renderMap(this.state.dungeon, this.monsters);
   }
 
   updateScene() {

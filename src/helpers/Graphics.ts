@@ -3,6 +3,7 @@ import { ExtendedObject3D, Scene3D, THREE } from "@enable3d/phaser-extension";
 import { Dungeon } from "../entities/Dungeon";
 import { GameConfig } from "../constants/config";
 import { Game } from "..";
+import { Monster } from "../entities/Monster";
 
 export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
@@ -15,13 +16,15 @@ export class Graphics {
     return Game.scene.getScenes(true)[0] as Scene3D;
   }
 
-  static renderMap(map: Dungeon) {
+  static renderMap(map: Dungeon, monsters: Monster[]) {
     const scene = this.getScene();
 
     // TODO refactor this shit!
     const third = scene.third;
     const size = GameConfig.gridSize;
     const textures = scene.registry.get("textures");
+    const objectSize = size * 0.9;
+
     this.geometries.forEach(item => item.removeFromParent());
     this.objects.forEach(item => item.removeFromParent());
     this.geometries = [];
@@ -55,7 +58,7 @@ export class Graphics {
 
         if (object !== 0){
           const obj = third.add.plane({
-            x: x * size, y: size / 2, z: y * size, height: size * 0.9, width: size * 0.9
+            x: x * size, y: size / 2, z: y * size, height: objectSize, width: objectSize
           },
           {
             lambert: { map: textures.object[object - 1], side: THREE.DoubleSide, transparent: true }
@@ -73,17 +76,19 @@ export class Graphics {
       { lambert: { map: textures.sky[1], side: THREE.BackSide } });
 
     // Monsters
-    const monsterSize = size * 0.9;
-    const monster = third.add.plane({
-      x: size, y: monsterSize / 2, z: 0, height: monsterSize, width: monsterSize
-    },
-    {
-      lambert: { map: textures.monster[0], side: THREE.DoubleSide, transparent: true }
+    monsters.forEach((item: Monster) => {
+      const monster = third.add.plane({
+        x: size * item.x, y: objectSize / 2, z: size * item.y, height: objectSize, width: objectSize
+      },
+      {
+        lambert: { map: textures.monster[item.id], side: THREE.DoubleSide, transparent: true }
+      });
+      monster.material.map.offset.x = 0;
+      monster.material.map.repeat.x = 0.25;
+      this.objects.push(monster);
+      this.maps.add(monster.material.map);
     });
-    monster.material.map.offset.x = 0;
-    monster.material.map.repeat.x = 0.25;
-    this.objects.push(monster);
-    this.maps.add(monster.material.map);
+
     this.updateID = setInterval(() => Graphics.updateObjectAnimation(), 250);
   }
 
