@@ -103,6 +103,12 @@ export class Load extends Scene3D {
 
     this.load.once("complete", () => {
       console.log("Load.loadMap: inside loadmap complete");
+      const map = this.cache.json.get("map");
+      const start = map.startPoints[args.startPoint];
+      const state = this.registry.get("state");
+      state.dungeon.loadDungeon(map);
+      state.party.x = start.x;
+      state.party.y = start.y;
       args.call();
     });
 
@@ -111,7 +117,8 @@ export class Load extends Scene3D {
   }
 }
 
-export type loadMapArgs = {
+export type loadMapArgs = { // TODO import this from scriptrunner?
+  startPoint: number;
   dungeon: string;
   call: () => void;
 }

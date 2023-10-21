@@ -11,6 +11,11 @@ type MessageParams = {
 type DialogParams = MessageParams & {
   face: string;
 }
+
+type changeDungeonParams = {
+  startPoint: number;
+  dungeon: string;
+}
 //TODO is this worth the time?
 
 
@@ -73,20 +78,15 @@ export class ScriptRunner {
     }
   }
 
-  static changeDungeon(data: any) {
+  static changeDungeon(data: changeDungeonParams) {
     const state: GameState = Game.registry.get("state");
     state.status = GameStatus.Teleporting;
     Graphics.message("Traveling...", "");
 
     EventManager.emit(GameEvents.LoadMap, {
-      dungeon: data.dungeon,
+      ...data,
       call: () => {
         try {
-          const map = Game.cache.json.get("map");
-          const start = map.startPoints[data.startPoint];
-          state.dungeon.loadDungeon(map);
-          state.party.x = start.x;
-          state.party.y = start.y;
           EventManager.emit(GameEvents.UpdateView);
           Graphics.clearMessage();
         } catch (e) {
