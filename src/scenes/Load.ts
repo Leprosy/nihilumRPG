@@ -13,12 +13,8 @@ export class Load extends Scene3D {
   }
 
   preload() {
-    // TODO if no map is passed, load first one
-    this.load.json("map", "assets/maps/map0.json");
-
     // Faces
     this.load.image("face0", "assets/img/face/face0.gif");
-
   }
 
   init() {
@@ -30,7 +26,7 @@ export class Load extends Scene3D {
     // TODO Load this from somewhere(saved game file)
     const state: GameState = {
       party: new Party([new Actor()]),
-      dungeon: new Dungeon(this.cache.json.get("map")),
+      dungeon: new Dungeon(),
       quests: new QuestManager(),
       status: GameStatus.Exploring
     };
@@ -82,7 +78,9 @@ export class Load extends Scene3D {
     // Done
     this.registry.set("state", state);
     this.registry.set("textures", textures);
-    this.scene.start("Explore");
+    this.loadMap({ startPoint: 0, dungeon: "map0", call: () => {
+      this.scene.start("Explore");
+    } }); // TODO: extract this data from saved game?
   }
 
 

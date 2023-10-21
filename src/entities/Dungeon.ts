@@ -10,13 +10,11 @@ export class Dungeon {
   walls: number[][];
   scripts: Record<string, Script>;
 
-  constructor(data: any) {
-    //TODO create a type for this?
-    this.loadDungeon(data);
+  constructor() {
   }
 
   loadDungeon(data: any) {
-    console.log("loading", data);
+    console.log("Dungeon.loadDungeon: loading", data);
     try {
       this.sky = data.sky;
       this.name = data.name;
@@ -25,7 +23,7 @@ export class Dungeon {
       this.objects = data.objects;
       this.walls = data.walls;
       this.scripts = data.scripts;
-      console.log("done", this);
+      console.log("Dungeon.loadDungeon: ready", this);
     } catch (e) {
       console.error("Dungeon.loadDungeon: Error loading map", e);
     }
