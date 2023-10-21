@@ -64,6 +64,7 @@ export class Explore extends Scene3D {
   }
 
   updateScene() {
+    console.log("Explore.updateScene", this.state.party);
     this.isMoving = true;
     const camera = this.third.camera;
     const size = GameConfig.gridSize;
