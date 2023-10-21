@@ -1,0 +1,91 @@
+{
+  "name": "Entry",
+  "sky": 0,
+  "startPoints": [ { "x": 0, "y": 0 } ],
+  "floors": [
+    [ 1, 1, 1, 1, 1 ],
+    [ 1, 1, 1, 1, 1 ],
+    [ 0, 1, 0, 1, 1 ],
+    [ 1, 1, 1, 1, 1 ],
+    [ 4, 4, 4, 4, 1 ]
+  ],
+  "ceilings": [
+    [ 0, 1, 1, 1, 1 ],
+    [ 1, 0, 0, 0, 1 ],
+    [ 1, 0, 0, 0, 1 ],
+    [ 1, 0, 0, 0, 1 ],
+    [ 1, 1, 1, 1, 1 ]
+  ],
+  "objects": [
+    [ 0, 0, 0, 0, 3 ],
+    [ 0, 0, 0, 1, 2 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 0, 0, 0, 0 ],
+    [ 3, 0, 1, 0, 3 ]
+  ],
+  "walls": [
+    [ 0, 0, 0, 0, 0 ],
+    [ 0, 2, 0, 0, 0 ],
+    [ 0, 2, 0, 0, 0 ],
+    [ 0, 1, 0, 1, 0 ],
+    [ 0, 0, 0, 0, 0 ]
+  ],
+  "scripts": {
+    "0x4": {
+      "inmediate": true,
+      "code": [
+        {
+          "command": "message",
+          "data": { "title": "A message", "message": "Hello world!" }
+        },
+        { "command": "message", "data": { "title": "Another message", "message": "Hello again!\nThis is a long, multiline\nmessage." } },
+        { "command": "message", "data": { "title": "Yet another message", "message": "Hello again!\nAnother very long\n\n\nThis is a long, multiline\nmessage." } }
+      ]
+    },
+    "4x4": {
+      "inmediate": true,
+      "code": [
+        {
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "Do you want to travel\nto another world?" }
+        },
+        {
+          "command": "choice",
+          "data": {
+            "text": "Are you ready?",
+            "options": {
+              "n": 2,
+              "y": 4
+            }
+          }
+        },
+        {
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "You are not ready..." }
+        },
+        {
+          "command": "endScript"
+        },
+        {
+          "command": "message",
+          "data": { "title": "A voice asks you", "message": "Get ready..." }
+        },
+        {
+          "command": "changeDungeon",
+          "data": { "dungeon": "map1", "startPoint": 0 }
+        }
+      ]
+    },
+    "4x0": {
+      "inmediate": false,
+      "code": [
+        { "command": "dialog", "data": { "title": "The wizard", "message": "Hello travelers...", "face": "face0" } },
+        { "command": "checkQuest", "data": { "questID": "oaw1", "true": 2, "false": 4 } },
+        { "command": "dialog", "data": { "title": "The wizard", "message": "You are already questing.\nGood luck!", "face": "face0" } },
+        { "command": "endScript" },
+        { "command": "giveQuest", "data": { "id": "oaw1", "description": "This is a fucking quest" } },
+        { "command": "dialog", "data": { "title": "The wizard", "message": "Please help me!", "face": "face0" } }
+      ]
+    }
+  }
+}
