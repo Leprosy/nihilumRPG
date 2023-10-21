@@ -23,12 +23,10 @@ export class Explore extends Scene3D {
     this.third.renderer.setPixelRatio(5);
   }
 
-  create() {
+  async create() {
     this.state = this.registry.get("state");
 
     // Events
-    this.events.on("create", () => this.generateMap());
-
     this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
       if (!this.isMoving) {
         this.lastKey = event.key;
@@ -53,11 +51,9 @@ export class Explore extends Scene3D {
       this.updateScene();
     });
 
-    // 3d scene
-    this.third.warpSpeed("-ground", "-sky");
-
-    // First set
-    this.updateScene();
+    // 3d scene and go
+    await this.third.warpSpeed("-ground", "-sky");
+    EventManager.emit(GameEvents.UpdateView);
   }
 
   generateMap() {
