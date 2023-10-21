@@ -88,6 +88,7 @@ export class Graphics {
       monster.material.map.repeat.x = 0.25;
       this.objects.push(monster);
       this.maps.add(monster.material.map);
+      item.obj3d = monster;
     });
 
     this.updateID = setInterval(() => Graphics.updateObjectAnimation(), 250);

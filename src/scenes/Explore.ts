@@ -58,7 +58,7 @@ export class Explore extends Scene3D {
 
   generateMap() {
     this.monsters = [
-      new Monster(1, 0, 0), new Monster(2, 0, 0), new Monster(3, 1, 1)
+      new Monster(5, 5, 0) //, new Monster(8, 9, 0), new Monster(5, 9, 1)
     ];
     Graphics.renderMap(this.state.dungeon, this.monsters);
   }
@@ -112,20 +112,24 @@ export class Explore extends Scene3D {
 
       case "w":
         party.forward(this.state.dungeon);
+        this.moveMonsters();
         break;
 
       case "s":
         party.backward(this.state.dungeon);
+        this.moveMonsters();
         break;
 
       case " ": {
-        // TODO address inmediate events
+        // TODO address inmediate events - events that need a certain party angle
         const script = this.state.dungeon.getScript(party.x, party.y);
 
         if (script) {
           ScriptRunner.setScript(script);
           this.state.status = GameStatus.Script;
           ScriptRunner.next({ lastKey: this.lastKey });
+        } else {
+          this.moveMonsters();
         }
 
         break;
@@ -135,6 +139,12 @@ export class Explore extends Scene3D {
         console.log("Explore.moveParty: Unregistered key", event);
         break;
     }
+  }
+
+  moveMonsters() {
+    this.monsters.forEach( (monster: Monster) => {
+      monster.chaseParty(this.state.party);
+    });
   }
 
   update() {}
