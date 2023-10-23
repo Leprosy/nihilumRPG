@@ -35,3 +35,8 @@ export type ScriptInstruction = {
 }
 
 export type TextureMap = Record<string, Texture[]>;
+
+export type Position2D = {
+  x: number,
+  y: number
+}

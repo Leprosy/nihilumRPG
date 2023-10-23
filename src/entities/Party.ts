@@ -1,3 +1,4 @@
+import { Position2D } from "../types";
 import { Actor } from "./Actor";
 import { Dungeon } from "./Dungeon";
 
@@ -32,14 +33,14 @@ export class Party {
     this.y = y;
   }
 
-  getForward() {
+  getForward(): Position2D {
     return {
       x: this.x + Math.round(Math.sin(this.a * Math.PI / 2)),
       y: this.y + Math.round(Math.cos(this.a * Math.PI / 2))
     };
   }
 
-  getBackward() {
+  getBackward(): Position2D {
     return {
       x: this.x - Math.round(Math.sin(this.a * Math.PI / 2)),
       y: this.y - Math.round(Math.cos(this.a * Math.PI / 2))

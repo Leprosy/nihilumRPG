@@ -58,7 +58,7 @@ export class Explore extends Scene3D {
 
   generateMap() {
     this.monsters = [
-      new Monster(5, 5, 0) //, new Monster(8, 9, 0), new Monster(5, 9, 1)
+      new Monster(7, 9, 0) //, new Monster(8, 9, 0), new Monster(5, 9, 1)
     ];
     Graphics.renderMap(this.state.dungeon, this.monsters);
   }
@@ -143,7 +143,7 @@ export class Explore extends Scene3D {
 
   moveMonsters() {
     this.monsters.forEach( (monster: Monster) => {
-      monster.chaseParty(this.state.party);
+      monster.chaseParty(this.state.party, this.state.dungeon, this.monsters.filter((mon: Monster) => mon != monster));
     });
   }
 

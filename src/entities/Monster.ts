@@ -1,5 +1,7 @@
 import { GameConfig } from "../constants/config";
+import { Position2D } from "../types";
 import { Actor } from "./Actor";
+import { Dungeon } from "./Dungeon";
 import { Party } from "./Party";
 import { ExtendedObject3D } from "@enable3d/phaser-extension";
 
@@ -18,35 +20,54 @@ export class Monster extends Actor {
     this.id = id;
   }
 
-  chaseParty(P: Party) {
-    console.log("Monster.chaseParty: cheking", P.x - this.x, P.y - this.y);
-    if (P.x === this.x && P.y === this.y) return; // Already combating
+  chaseParty(P: Party, dungeon: Dungeon, monsters: Monster[]) {
+    console.log("Monster.chaseParty: checking", P.x, P.y, "=", this.x, this.y);
+    if (P.x === this.x && P.y === this.y) {
+      console.log("Already engeged");
+      return;
+    }
 
-    if (Math.abs(P.x - this.x) + Math.abs(P.y - this.y) <= 3) {
+    let nx = this.x;
+    let ny = this.y;
+
+    if (Math.abs(P.x - nx) + Math.abs(P.y - ny) <= 3) {
       console.log("Monster.chaseParty: is chasing");
 
       if (P.a == 0 || P.a == 2) { // Party has N-S orientation
-        if (this.x == P.x) { // Same position, get near
+        if (nx == P.x) { // Same position, get near
           console.log("same x");
-          this.y += (P.y - this.y) / Math.abs(P.y - this.y);
+          ny += (P.y - ny) / Math.abs(P.y - ny);
         } else {
           console.log("try to get same x");
-          this.x += (P.x - this.x) / Math.abs(P.x - this.x);
+          nx += (P.x - nx) / Math.abs(P.x - nx);
         }
       } else {
-        if (this.y == P.y) { // Same position, get near
+        if (ny == P.y) { // Same position, get near
           console.log("same y");
-          this.x += (P.x - this.x) / Math.abs(P.x - this.x);
+          nx += (P.x - nx) / Math.abs(P.x - nx);
         } else {
           console.log("try to get same y");
-          this.y += (P.y - this.y) / Math.abs(P.y - this.y);
+          ny += (P.y - ny) / Math.abs(P.y - ny);
         }
       }
 
-      // Update obj3d
-      this.obj3d.position.x = this.x * GameConfig.gridSize;
-      this.obj3d.position.z = this.y * GameConfig.gridSize;
+      console.log("new pos", nx, ny);
+      if (dungeon.isPassable(nx, ny)) {
+        if (!monsters.some((mon: Monster) => mon.x === nx && mon.y === ny)) {
+          this.x = nx;
+          this.y = ny;
+          this.set3dPosition(nx, ny);
+          return;
+        }
+      } else {
+        console.log("Is blocked");
+        return;
+      }
     }
+  }
 
+  set3dPosition(x: number, y: number) {
+    this.obj3d.position.x = x * GameConfig.gridSize;
+    this.obj3d.position.z = y * GameConfig.gridSize;
   }
 }
