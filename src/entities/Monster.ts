@@ -12,19 +12,25 @@ export class Monster extends Actor {
   x: number;
   y: number;
   obj3d: ExtendedObject3D;
+  groupIndex: number;
+  groupCount: number;
 
   constructor(x: number, y: number, id: number) {
     super();
     this.x = x;
     this.y = y;
     this.id = id;
+    this.groupIndex = 0;
+    this.groupCount = 1;
   }
 
-  chaseParty(P: Party, dungeon: Dungeon, monsters: Monster[]) {
+  chaseParty(P: Party, dungeon: Dungeon): Position2D {
     console.log("Monster.chaseParty: checking", P.x, P.y, "=", this.x, this.y);
+    const samePos = { x: this.x, y: this.y };
+
     if (P.x === this.x && P.y === this.y) {
       console.log("Already engeged");
-      return;
+      return samePos;
     }
 
     let nx = this.x;
@@ -53,21 +59,35 @@ export class Monster extends Actor {
 
       console.log("new pos", nx, ny);
       if (dungeon.isPassable(nx, ny)) {
-        if (!monsters.some((mon: Monster) => mon.x === nx && mon.y === ny)) {
+        return { x: nx, y: ny };
+        /* const totalMonsters = monsters.reduce( (ac: number, mon: Monster) =>  (mon.x === nx && mon.y === ny) ? ac + 1 : ac, 0);
+
+        if (totalMonsters < 3) {
           this.x = nx;
           this.y = ny;
+          this.groupIndex = totalMonsters;
+
+          monsters.forEach((mon: Monster) => {
+            console.log("iter", mon);
+            if (mon.x === nx && mon.y === ny) mon.groupCount = totalMonsters;
+          });
+
           this.set3dPosition(nx, ny);
           return;
-        }
+        } */
       } else {
         console.log("Is blocked");
-        return;
+        return samePos;
       }
     }
+
+    console.log("Not chasing");
+    return samePos;
   }
 
-  set3dPosition(x: number, y: number) {
-    this.obj3d.position.x = x * GameConfig.gridSize;
-    this.obj3d.position.z = y * GameConfig.gridSize;
+  set3dPosition(dx: number, dy: number) {
+    this.obj3d.position.x = this.x * GameConfig.gridSize + dx;
+    this.obj3d.position.z = this.y * GameConfig.gridSize + dy;
+    // this.obj3d.position.y = GameConfig.gridSize / 5 * this.groupIndex;
   }
 }

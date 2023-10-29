@@ -4,6 +4,7 @@ import { Dungeon } from "../entities/Dungeon";
 import { GameConfig } from "../constants/config";
 import { Game } from "..";
 import { Monster } from "../entities/Monster";
+import { MonsterManager } from "../entities/MonsterManager";
 
 export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
@@ -16,8 +17,9 @@ export class Graphics {
     return Game.scene.getScenes(true)[0] as Scene3D;
   }
 
-  static renderMap(map: Dungeon, monsters: Monster[]) {
+  static renderMap(map: Dungeon, mm: MonsterManager) {
     const scene = this.getScene();
+    const monsters = mm.monsters;
 
     // TODO refactor this shit!
     const third = scene.third;
@@ -45,11 +47,11 @@ export class Graphics {
             { lambert: { map: textures.floor[floor - 1] } }));
         }
 
-        if (ceiling !== 0){
+        /* if (ceiling !== 0){
           this.geometries.push(third.add.box(
             { x: x * size, y: size, z: y * size, height: floorSize, width: size, depth: size },
             { lambert: { map: textures.ceiling[ceiling - 1] } }));
-        }
+        } */
 
         if (wall !== 0){
           this.geometries.push(third.add.box(

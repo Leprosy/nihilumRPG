@@ -5,17 +5,19 @@ import { EventManager } from "../helpers/EventManager";
 import { Graphics } from "../helpers/Graphics";
 import { GameConfig } from "../constants/config";
 import { Monster } from "../entities/Monster";
+import { MonsterManager } from "../entities/MonsterManager";
 
 export class Explore extends Scene3D {
   state: GameState;
   lastKey: string;
   isMoving: boolean;
-  monsters: Monster[];
+  monsters: MonsterManager;
 
   constructor() {
     super("Explore");
     this.lastKey = "";
     this.isMoving = false;
+    this.monsters = new MonsterManager();
   }
 
   init() {
@@ -57,9 +59,8 @@ export class Explore extends Scene3D {
   }
 
   generateMap() {
-    this.monsters = [
-      new Monster(7, 9, 0) //, new Monster(8, 9, 0), new Monster(5, 9, 1)
-    ];
+    this.monsters.generate(this.state.dungeon);
+    window.oaw = this.monsters;
     Graphics.renderMap(this.state.dungeon, this.monsters);
   }
 
@@ -142,9 +143,7 @@ export class Explore extends Scene3D {
   }
 
   moveMonsters() {
-    this.monsters.forEach( (monster: Monster) => {
-      monster.chaseParty(this.state.party, this.state.dungeon, this.monsters.filter((mon: Monster) => mon != monster));
-    });
+    this.monsters.chaseParty(this.state.party, this.state.dungeon);
   }
 
   update() {}
