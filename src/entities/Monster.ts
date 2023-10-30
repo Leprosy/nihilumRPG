@@ -72,11 +72,9 @@ export class Monster extends Actor {
 
   set3dPosition() {
     const dSize = GameConfig.gridSize / 3;
-    console.log((this.groupCount - 1) * dSize);
-
-    const dx = this.groupIndex * dSize - (this.groupCount - 1) * GameConfig.gridSize / 2;
+    const dx = this.groupIndex * dSize - (this.groupCount - 1) * dSize / 2;
     const dy = 0;
-    this.obj3d.position.x = this.x * GameConfig.gridSize + dx;
+    this.obj3d.position.x = this.x * GameConfig.gridSize - dx;
     this.obj3d.position.z = this.y * GameConfig.gridSize + dy;
   }
 }
