@@ -24,19 +24,30 @@ export class MonsterManager {
 
   chaseParty(party: Party, dungeon: Dungeon) {
     const oaw =  {};
+
+    // Chase party
     this.monsters.forEach( (monster: Monster) => {
-      const pos = monster.chaseParty(party, dungeon);
+      const pos = monster.chaseParty(party, dungeon); // TODO: move dungeon wall logic here?
       const count = oaw[this.getKey(pos.x, pos.y)] || 0;
 
+      // Groups
       if (count < MAX_MONSTERS) {
         monster.x = pos.x;
         monster.y = pos.y;
         monster.set3dPosition(0, 0);
+        monster.groupIndex = count;
       }
 
-      oaw[this.getKey(monster.x, monster.y)] = (oaw[this.getKey(monster.x, monster.y)] || 0) + 1;
+      const key = this.getKey(monster.x, monster.y);
+      oaw[key] = (oaw[key] || 0) + 1;
     });
 
-    console.log("OAW total", oaw);
+    // Update group info
+    this.monsters.forEach( (monster: Monster) => {
+      const key = this.getKey(monster.x, monster.y);
+      monster.groupCount = oaw[key];
+    });
+
+    console.log("OAW total", oaw, this.monsters);
   }
 }
