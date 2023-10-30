@@ -34,7 +34,6 @@ export class MonsterManager {
       if (count < MAX_MONSTERS) {
         monster.x = pos.x;
         monster.y = pos.y;
-        monster.set3dPosition(0, 0);
         monster.groupIndex = count;
       }
 
@@ -42,10 +41,11 @@ export class MonsterManager {
       oaw[key] = (oaw[key] || 0) + 1;
     });
 
-    // Update group info
+    // Update group info & update 3d object
     this.monsters.forEach( (monster: Monster) => {
       const key = this.getKey(monster.x, monster.y);
       monster.groupCount = oaw[key];
+      monster.set3dPosition();
     });
 
     console.log("OAW total", oaw, this.monsters);

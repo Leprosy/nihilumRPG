@@ -60,21 +60,6 @@ export class Monster extends Actor {
       console.log("new pos", nx, ny);
       if (dungeon.isPassable(nx, ny)) {
         return { x: nx, y: ny };
-        /* const totalMonsters = monsters.reduce( (ac: number, mon: Monster) =>  (mon.x === nx && mon.y === ny) ? ac + 1 : ac, 0);
-
-        if (totalMonsters < 3) {
-          this.x = nx;
-          this.y = ny;
-          this.groupIndex = totalMonsters;
-
-          monsters.forEach((mon: Monster) => {
-            console.log("iter", mon);
-            if (mon.x === nx && mon.y === ny) mon.groupCount = totalMonsters;
-          });
-
-          this.set3dPosition(nx, ny);
-          return;
-        } */
       } else {
         console.log("Is blocked");
         return samePos;
@@ -85,9 +70,13 @@ export class Monster extends Actor {
     return samePos;
   }
 
-  set3dPosition(dx: number, dy: number) {
+  set3dPosition() {
+    const dSize = GameConfig.gridSize / 3;
+    console.log((this.groupCount - 1) * dSize);
+
+    const dx = this.groupIndex * dSize - (this.groupCount - 1) * GameConfig.gridSize / 2;
+    const dy = 0;
     this.obj3d.position.x = this.x * GameConfig.gridSize + dx;
     this.obj3d.position.z = this.y * GameConfig.gridSize + dy;
-    // this.obj3d.position.y = GameConfig.gridSize / 5 * this.groupIndex;
   }
 }
