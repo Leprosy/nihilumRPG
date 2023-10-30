@@ -23,7 +23,9 @@ class SimpleGame {
       ...Canvas()
     };
 
-    enable3d(() => Game = new Phaser.Game(config));
+    enable3d(() => {
+      Game = new Phaser.Game(config);
+    });
   }
 }
 
