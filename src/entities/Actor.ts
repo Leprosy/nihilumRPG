@@ -13,7 +13,7 @@ export class Actor {
     this.hp = 5;
     this.ap = 5;
 
-    this.name = `OAW${  new Date()}`;
+    this.name = `OAW${new Date().getTime()}`;
     this.mind = 2;
     this.aspect = 1;
     this.body = 1;

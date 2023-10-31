@@ -47,11 +47,11 @@ export class Graphics {
             { lambert: { map: textures.floor[floor - 1] } }));
         }
 
-        /* if (ceiling !== 0){
+        if (ceiling !== 0){
           this.geometries.push(third.add.box(
             { x: x * size, y: size, z: y * size, height: floorSize, width: size, depth: size },
             { lambert: { map: textures.ceiling[ceiling - 1] } }));
-        } */
+        }
 
         if (wall !== 0){
           this.geometries.push(third.add.box(

@@ -45,9 +45,14 @@ export class MonsterManager {
     this.monsters.forEach( (monster: Monster) => {
       const key = this.getKey(monster.x, monster.y);
       monster.groupCount = oaw[key];
-      monster.set3dPosition();
     });
 
-    console.log("OAW total", oaw, this.monsters);
+    this.updateMonsters3dObjects();
+  }
+
+  updateMonsters3dObjects() {
+    this.monsters.forEach( (monster: Monster) => {
+      monster.set3dPosition();
+    });
   }
 }

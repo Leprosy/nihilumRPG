@@ -104,11 +104,13 @@ export class Explore extends Scene3D {
       case "a":
         party.turnLeft();
         Graphics.rotateFix();
+        this.monsters.updateMonsters3dObjects();
         break;
 
       case "d":
         party.turnRight();
         Graphics.rotateFix();
+        this.monsters.updateMonsters3dObjects();
         break;
 
       case "w":

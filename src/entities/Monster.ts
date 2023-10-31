@@ -1,3 +1,4 @@
+import { Game } from "..";
 import { GameConfig } from "../constants/config";
 import { Position2D } from "../types";
 import { Actor } from "./Actor";
@@ -25,11 +26,10 @@ export class Monster extends Actor {
   }
 
   chaseParty(P: Party, dungeon: Dungeon): Position2D {
-    console.log("Monster.chaseParty: checking", P.x, P.y, "=", this.x, this.y);
+    console.log("Monster.chaseParty: checking", P.x, P.y, "-", this.x, this.y);
     const samePos = { x: this.x, y: this.y };
 
     if (P.x === this.x && P.y === this.y) {
-      console.log("Already engeged");
       return samePos;
     }
 
@@ -37,43 +37,37 @@ export class Monster extends Actor {
     let ny = this.y;
 
     if (Math.abs(P.x - nx) + Math.abs(P.y - ny) <= 3) {
-      console.log("Monster.chaseParty: is chasing");
-
       if (P.a == 0 || P.a == 2) { // Party has N-S orientation
         if (nx == P.x) { // Same position, get near
-          console.log("same x");
           ny += (P.y - ny) / Math.abs(P.y - ny);
         } else {
-          console.log("try to get same x");
           nx += (P.x - nx) / Math.abs(P.x - nx);
         }
       } else {
         if (ny == P.y) { // Same position, get near
-          console.log("same y");
           nx += (P.x - nx) / Math.abs(P.x - nx);
         } else {
-          console.log("try to get same y");
           ny += (P.y - ny) / Math.abs(P.y - ny);
         }
       }
 
-      console.log("new pos", nx, ny);
       if (dungeon.isPassable(nx, ny)) {
         return { x: nx, y: ny };
       } else {
-        console.log("Is blocked");
         return samePos;
       }
     }
 
-    console.log("Not chasing");
     return samePos;
   }
 
   set3dPosition() {
+    const party: Party = Game.registry.get("state").party;
     const dSize = GameConfig.gridSize / 3;
-    const dx = this.groupIndex * dSize - (this.groupCount - 1) * dSize / 2;
-    const dy = 0;
+    const d = this.groupIndex * dSize - (this.groupCount - 1) * dSize / 2;
+    const dx = d * (party.a == 0 || party.a == 2 ? 1 * (party.a - 1) : 0);
+    const dy = d * (party.a == 1 || party.a == 3 ? 1 * (party.a - 2) : 0);
+
     this.obj3d.position.x = this.x * GameConfig.gridSize - dx;
     this.obj3d.position.z = this.y * GameConfig.gridSize + dy;
   }
