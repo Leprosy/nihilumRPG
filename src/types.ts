@@ -17,6 +17,7 @@ export enum GameEvents {
 }
 
 export enum GameStatus {
+  Fighting,
   Exploring,
   Teleporting,
   Script,

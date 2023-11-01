@@ -55,4 +55,8 @@ export class MonsterManager {
       monster.set3dPosition();
     });
   }
+
+  isFighting(party: Party) {
+    return this.monsters.some((monster: Monster) => monster.x === party.x && monster.y === party.y);
+  }
 }

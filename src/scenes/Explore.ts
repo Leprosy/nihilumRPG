@@ -4,7 +4,6 @@ import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
 import { Graphics } from "../helpers/Graphics";
 import { GameConfig } from "../constants/config";
-import { Monster } from "../entities/Monster";
 import { MonsterManager } from "../entities/MonsterManager";
 
 export class Explore extends Scene3D {
@@ -43,8 +42,12 @@ export class Explore extends Scene3D {
           case GameStatus.ScriptChoice:
             ScriptRunner.next({ lastKey: this.lastKey });
             break;
-        }
 
+          case GameStatus.Fighting:
+            this.fightParty(event);
+            this.updateScene();
+            break;
+        }
       }
     });
 
@@ -96,10 +99,47 @@ export class Explore extends Scene3D {
     setTimeout(fx, delay);
   }
 
+  moveMonsters() {
+    const { party, dungeon } = this.state;
+    this.monsters.chaseParty(party, dungeon);
+    console.log("OAW is fught", this.monsters.isFighting(party));
+    this.state.status = this.monsters.isFighting(party) ? GameStatus.Fighting : GameStatus.Exploring;
+  }
+
+
+
+  // TODO is there a better way to handle keys? both fight and move party cases
+  // (call a key f() from a registry object?)
+  // other module?
+  fightParty(event: KeyboardEvent) {
+    const { party } = this.state;
+
+    switch (event.key) {
+      case "a":
+        party.turnLeft();
+        Graphics.rotateFix();
+        this.monsters.updateMonsters3dObjects();
+        break;
+
+      case "d":
+        party.turnRight();
+        Graphics.rotateFix();
+        this.monsters.updateMonsters3dObjects();
+        break;
+
+      case " ":
+        this.moveMonsters();
+        break;
+
+      default:
+        console.log("Explore.fightParty: Unregistered key", event);
+        break;
+    }
+  }
+
   moveParty(event: KeyboardEvent) {
     const { party } = this.state;
 
-    // TODO is there a better way? (call a key f() from a registry object?)
     switch (event.key) {
       case "a":
         party.turnLeft();
@@ -142,10 +182,6 @@ export class Explore extends Scene3D {
         console.log("Explore.moveParty: Unregistered key", event);
         break;
     }
-  }
-
-  moveMonsters() {
-    this.monsters.chaseParty(this.state.party, this.state.dungeon);
   }
 
   update() {}
