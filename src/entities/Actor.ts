@@ -14,9 +14,13 @@ export class Actor {
     this.ap = 5;
 
     this.name = `OAW${new Date().getTime()}`;
-    this.mind = 2;
-    this.aspect = 1;
-    this.body = 1;
-    this.dexterity = 0;
+    this.mind = this.genStat();
+    this.aspect = this.genStat();
+    this.body = this.genStat();
+    this.dexterity = this.genStat();
+  }
+
+  genStat() {
+    return Math.round(Math.random() * 4);
   }
 }

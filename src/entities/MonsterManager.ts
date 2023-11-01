@@ -1,3 +1,4 @@
+import { Position2D } from "../types";
 import { Dungeon } from "./Dungeon";
 import { Monster } from "./Monster";
 import { Party } from "./Party";
@@ -56,7 +57,11 @@ export class MonsterManager {
     });
   }
 
+  getMonstersAt(pos: Position2D) {
+    return this.monsters.filter((monster: Monster) => monster.x === pos.x && monster.y === pos.y);
+  }
+
   isFighting(party: Party) {
-    return this.monsters.some((monster: Monster) => monster.x === party.x && monster.y === party.y);
+    return this.getMonstersAt(party as Position2D).length > 0;
   }
 }

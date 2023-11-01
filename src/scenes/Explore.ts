@@ -1,22 +1,25 @@
 import { Scene3D } from "@enable3d/phaser-extension";
-import { GameEvents, GameState, GameStatus } from "../types";
+import { GameEvents, GameState, GameStatus, Position2D } from "../types";
 import { ScriptRunner } from "../helpers/ScriptRunner";
 import { EventManager } from "../helpers/EventManager";
 import { Graphics } from "../helpers/Graphics";
 import { GameConfig } from "../constants/config";
 import { MonsterManager } from "../entities/MonsterManager";
+import { CombatQueue } from "../helpers/CombatQueue";
 
 export class Explore extends Scene3D {
   state: GameState;
   lastKey: string;
   isMoving: boolean;
   monsters: MonsterManager;
+  combatQueue: CombatQueue;
 
   constructor() {
     super("Explore");
     this.lastKey = "";
     this.isMoving = false;
     this.monsters = new MonsterManager();
+    this.combatQueue = new CombatQueue();
   }
 
   init() {
@@ -26,6 +29,7 @@ export class Explore extends Scene3D {
 
   async create() {
     this.state = this.registry.get("state");
+    this.combatQueue.pushActors(this.state.party.actors);
 
     // Events
     this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
@@ -103,7 +107,11 @@ export class Explore extends Scene3D {
     const { party, dungeon } = this.state;
     this.monsters.chaseParty(party, dungeon);
     console.log("OAW is fught", this.monsters.isFighting(party));
-    this.state.status = this.monsters.isFighting(party) ? GameStatus.Fighting : GameStatus.Exploring;
+
+    if (this.monsters.isFighting(party)) {
+      this.state.status =  GameStatus.Fighting;
+      this.combatQueue.pushActors(this.monsters.getMonstersAt(party as Position2D)); //, party);
+    }
   }
 
 
