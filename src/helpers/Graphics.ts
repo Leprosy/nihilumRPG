@@ -93,6 +93,7 @@ export class Graphics {
       item.obj3d = monster;
     });
 
+    // TODO is this code run more than it should?
     this.updateID = setInterval(() => Graphics.updateObjectAnimation(), 250);
   }
 

@@ -6,6 +6,8 @@ import { Graphics } from "../helpers/Graphics";
 import { GameConfig } from "../constants/config";
 import { MonsterManager } from "../entities/MonsterManager";
 import { CombatQueue } from "../helpers/CombatQueue";
+import { Actor } from "../entities/Actor";
+import { Monster } from "../entities/Monster";
 
 export class Explore extends Scene3D {
   state: GameState;
@@ -51,6 +53,11 @@ export class Explore extends Scene3D {
             this.fightParty(event);
             this.updateScene();
             break;
+
+          case GameStatus.FightingChoice:
+            this.fightChoiceParty(event);
+            this.updateScene();
+            break;
         }
       }
     });
@@ -85,7 +92,7 @@ export class Explore extends Scene3D {
 
     let i = 0;
 
-    const fx = () => {
+    const fx = () => { // TODO define this outside for performance?
       if (i++ < resolution) {
         camera.position.setX(camera.position.x + dx);
         camera.position.setZ(camera.position.z + dz);
@@ -109,9 +116,24 @@ export class Explore extends Scene3D {
     console.log("OAW is fught", this.monsters.isFighting(party));
 
     if (this.monsters.isFighting(party)) {
-      this.state.status =  GameStatus.Fighting;
+
       this.combatQueue.pushActors(this.monsters.getMonstersAt(party as Position2D)); //, party);
+      if (this.state.status === GameStatus.Exploring) this.doNextCombatAction();
+      this.state.status =  GameStatus.Fighting;
     }
+  }
+
+  doNextCombatAction() {
+    let actor: Actor;
+
+    while ((actor = this.combatQueue.getNextActor()) instanceof Monster) {
+      console.log(actor instanceof Monster);
+      console.log("Explore.doNextCombatAction: Monster action executed", actor);
+      this.moveMonsters();
+    }
+
+    console.log("Explore.doNextCombatAction: Party action", actor);
+    this.state.status = GameStatus.FightingChoice;
   }
 
 
@@ -119,6 +141,34 @@ export class Explore extends Scene3D {
   // TODO is there a better way to handle keys? both fight and move party cases
   // (call a key f() from a registry object?)
   // other module?
+  fightChoiceParty(event: KeyboardEvent) {
+    const { party } = this.state;
+
+    switch (event.key) {
+      case "a":
+        party.turnLeft();
+        Graphics.rotateFix();
+        this.monsters.updateMonsters3dObjects();
+        break;
+
+      case "d":
+        party.turnRight();
+        Graphics.rotateFix();
+        this.monsters.updateMonsters3dObjects();
+        break;
+
+      case " ":
+        console.log("Explore.fightChoiceParty: Party action done");
+        this.state.status = GameStatus.Fighting;
+        this.doNextCombatAction();
+        break;
+
+      default:
+        console.log("Explore.fightChoiceParty: Unregistered key", event);
+        break;
+    }
+  }
+
   fightParty(event: KeyboardEvent) {
     const { party } = this.state;
 
@@ -136,7 +186,7 @@ export class Explore extends Scene3D {
         break;
 
       case " ":
-        this.moveMonsters();
+        this.doNextCombatAction();
         break;
 
       default:

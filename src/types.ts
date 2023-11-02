@@ -16,13 +16,15 @@ export enum GameEvents {
   ScreenCommand = "ScreenCommand"
 }
 
+
 export enum GameStatus {
-  Fighting,
   Exploring,
   Teleporting,
   Script,
   ScriptChoice,
-  ScriptPrompt
+  ScriptPrompt,
+  Fighting,
+  FightingChoice
 }
 
 export type Script = {

@@ -11,6 +11,7 @@ export class Dungeon {
   scripts: Record<string, Script>;
 
   constructor() {
+
   }
 
   loadDungeon(data: any) {
