@@ -62,12 +62,11 @@ export class Graphics {
         if (object !== 0){
           const obj = third.add.plane({
             x: x * size, y: objectSize / 2 + floorSize / 2, z: y * size, height: objectSize, width: objectSize
-          },
-          {
+          }, {
             lambert: { map: textures.object[object - 1], side: THREE.DoubleSide, transparent: true }
           });
-          obj.material.map.offset.x = 0;
-          obj.material.map.repeat.x = obj.material.map.source.data.height / obj.material.map.source.data.width;
+          // obj.material.map.offset.x = 0;
+          // obj.material.map.repeat.x = obj.material.map.source.data.height / obj.material.map.source.data.width;
           this.objects.push(obj);
           this.maps.add(obj.material.map);
         }
@@ -82,16 +81,24 @@ export class Graphics {
     monsters.forEach((item: Monster) => {
       const monster = third.add.plane({
         x: size * item.x, y: objectSize / 2 + floorSize / 2, z: size * item.y, height: objectSize, width: objectSize
-      },
-      {
-        lambert: { map: textures.monster[item.id], side: THREE.DoubleSide, transparent: true }
+      }, {
+        lambert: { map: textures.monster[item.idle], side: THREE.DoubleSide, transparent: true }
       });
-      monster.material.map.offset.x = 0;
-      monster.material.map.repeat.x = 0.25;
+
+      monster.switchTexture = () => { // TODO inject this crap in a proper way, ie extending the ExtendedObject3D type
+        monster.material.map = monster.material.map === textures.monster[item.idle] ? textures.monsteract[item.idle] : textures.monster[item.idle];
+        monster.material.needsUpdate = true;
+      };
+
+      // monster.material.map.offset.x = 0;
+      // monster.material.map.repeat.x = 0.25;
       this.objects.push(monster);
       this.maps.add(monster.material.map);
+      window.oaw2 = this.maps; // TODO fuck this, please
       item.obj3d = monster;
     });
+
+
 
     // TODO is this code run more than it should?
     this.updateID = setInterval(() => Graphics.updateObjectAnimation(), 250);

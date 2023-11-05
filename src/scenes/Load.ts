@@ -35,8 +35,9 @@ export class Load extends Scene3D {
     const keyMap = {
       "floor": "/assets/img/textures/", "wall": "/assets/img/textures/",
       "ceiling": "/assets/img/textures/", "sky": "/assets/img/textures/",
-      "monster": "/assets/img/monsters/", "object": "/assets/img/objects/"
+      "monster": "/assets/img/monsters/", "monsteract": "/assets/img/monsters/", "object": "/assets/img/objects/"
     };
+    const animatedKeys = ["monster", "monsteract", "object"];
     const keys = Object.keys(keyMap);
     const textures: TextureMap = {};
 
@@ -65,6 +66,13 @@ export class Load extends Scene3D {
           tex.magFilter = THREE.NearestFilter;
           tex.minFilter = THREE.LinearMipMapLinearFilter;
           arr.push(tex);
+
+          // Objects and monsters fix
+          if (animatedKeys.indexOf(key) >= 0) {
+            tex.offset.x = 0;
+            tex.repeat.x = tex.source.data.height / tex.source.data.width;
+          }
+
           ++index;
         }
       }

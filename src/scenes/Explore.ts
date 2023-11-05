@@ -113,12 +113,10 @@ export class Explore extends Scene3D {
   moveMonsters() {
     const { party, dungeon } = this.state;
     this.monsters.chaseParty(party, dungeon);
-    console.log("OAW is fught", this.monsters.isFighting(party));
 
     if (this.monsters.isFighting(party)) {
-
-      this.combatQueue.pushActors(this.monsters.getMonstersAt(party as Position2D)); //, party);
-      if (this.state.status === GameStatus.Exploring) this.doNextCombatAction();
+      this.combatQueue.pushActors(this.monsters.getMonstersAt(party as Position2D));
+      if (this.state.status === GameStatus.Exploring) this.doNextCombatAction(); // first time, do the action as soon as possible
       this.state.status =  GameStatus.Fighting;
     }
   }
@@ -127,7 +125,6 @@ export class Explore extends Scene3D {
     let actor: Actor;
 
     while ((actor = this.combatQueue.getNextActor()) instanceof Monster) {
-      console.log(actor instanceof Monster);
       console.log("Explore.doNextCombatAction: Monster action executed", actor);
       this.moveMonsters();
     }

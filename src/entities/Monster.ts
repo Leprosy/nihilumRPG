@@ -5,7 +5,13 @@ import { Actor } from "./Actor";
 import { Dungeon } from "./Dungeon";
 import { Party } from "./Party";
 import { ExtendedObject3D } from "@enable3d/phaser-extension";
+import monsters from "../../assets/monsters.json";
 
+type monsterDefinition = {
+  name: string;
+  idle: string;
+  actions: string;
+}
 
 export class Monster extends Actor {
   experience: number;
@@ -15,14 +21,21 @@ export class Monster extends Actor {
   obj3d: ExtendedObject3D;
   groupIndex: number;
   groupCount: number;
+  idle: string;
+  actions: string;
 
   constructor(x: number, y: number, id: number) {
     super();
+    const data: monsterDefinition = monsters[id];
+    this.name = `${data.name} ${this.name}`;
+    this.idle = data.idle;
+    this.actions = data.actions;
     this.x = x;
     this.y = y;
     this.id = id;
     this.groupIndex = 0;
     this.groupCount = 1;
+    console.log("oaw", monsters);
   }
 
   chaseParty(P: Party, dungeon: Dungeon): Position2D {
