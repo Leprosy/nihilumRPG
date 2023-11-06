@@ -65,8 +65,7 @@ export class Graphics {
           }, {
             lambert: { map: textures.object[object - 1], side: THREE.DoubleSide, transparent: true }
           });
-          // obj.material.map.offset.x = 0;
-          // obj.material.map.repeat.x = obj.material.map.source.data.height / obj.material.map.source.data.width;
+
           this.objects.push(obj);
           this.maps.add(obj.material.map);
         }
@@ -90,11 +89,8 @@ export class Graphics {
         monster.material.needsUpdate = true;
       };
 
-      // monster.material.map.offset.x = 0;
-      // monster.material.map.repeat.x = 0.25;
       this.objects.push(monster);
       this.maps.add(monster.material.map);
-      window.oaw2 = this.maps; // TODO fuck this, please
       item.obj3d = monster;
     });
 

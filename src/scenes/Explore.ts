@@ -74,7 +74,6 @@ export class Explore extends Scene3D {
 
   generateMap() {
     this.monsters.generate(this.state.dungeon);
-    window.oaw = this.monsters;
     Graphics.renderMap(this.state.dungeon, this.monsters);
   }
 
