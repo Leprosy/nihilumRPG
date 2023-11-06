@@ -8,6 +8,7 @@ import { MonsterManager } from "../entities/MonsterManager";
 import { CombatQueue } from "../helpers/CombatQueue";
 import { Actor } from "../entities/Actor";
 import { Monster } from "../entities/Monster";
+import { executeFrames } from "../helpers/animation";
 
 export class Explore extends Scene3D {
   state: GameState;
@@ -83,30 +84,22 @@ export class Explore extends Scene3D {
     const camera = this.third.camera;
     const size = GameConfig.gridSize;
     const resolution = 5;
-    const delay = 100 / resolution;
     const backward = this.state.party.getBackward();
 
     const dx = ((backward.x * size) - camera.position.x) / resolution;
     const dz = ((backward.y * size) - camera.position.z) / resolution;
 
-    let i = 0;
-
-    const fx = () => { // TODO define this outside for performance?
-      if (i++ < resolution) {
-        camera.position.setX(camera.position.x + dx);
-        camera.position.setZ(camera.position.z + dz);
-        Graphics.rotateFix();
-        setTimeout(fx, delay);
-      } else {
-        camera.position.set(backward.x * size, size / 2, backward.y * size);
-        this.isMoving = false;
-        Graphics.rotateFix();
-      }
-
+    executeFrames(() => {
+      camera.position.setX(camera.position.x + dx);
+      camera.position.setZ(camera.position.z + dz);
+      Graphics.rotateFix();
+    }, () => {
+      camera.position.set(backward.x * size, size / 2, backward.y * size);
+      this.isMoving = false;
+      Graphics.rotateFix();
+    }, () => {
       camera.lookAt(this.state.party.x * size, size / 2, this.state.party.y * size);
-    };
-
-    setTimeout(fx, delay);
+    }, resolution, 100);
   }
 
   moveMonsters() {
