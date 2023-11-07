@@ -1,3 +1,4 @@
+import { ExtendedObject3D } from "@enable3d/phaser-extension";
 import { Dungeon } from "./entities/Dungeon";
 import { Party } from "./entities/Party";
 import { QuestManager } from "./helpers/QuestManager";
@@ -42,4 +43,9 @@ export type TextureMap = Record<string, Texture[]>;
 export type Position2D = {
   x: number,
   y: number
+}
+
+export interface Monster3D extends ExtendedObject3D {
+  switchTexture: () => void;
+  executeAction: (end: () => void, index1: number, index2: number, time: number) => void;
 }

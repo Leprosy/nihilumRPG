@@ -5,6 +5,9 @@ import { GameConfig } from "../constants/config";
 import { Game } from "..";
 import { Monster } from "../entities/Monster";
 import { MonsterManager } from "../entities/MonsterManager";
+import { executeFrames } from "./animation";
+import { Monster3D } from "../types";
+
 
 export class Graphics {
   private static currentMessage: Phaser.GameObjects.Group;
@@ -78,15 +81,30 @@ export class Graphics {
 
     // Monsters
     monsters.forEach((item: Monster) => {
-      const monster = third.add.plane({
+      const monster: Monster3D = third.add.plane({
         x: size * item.x, y: objectSize / 2 + floorSize / 2, z: size * item.y, height: objectSize, width: objectSize
       }, {
         lambert: { map: textures.monster[item.idle], side: THREE.DoubleSide, transparent: true }
-      });
+      }) as Monster3D;
 
-      monster.switchTexture = () => { // TODO inject this crap in a proper way, ie extending the ExtendedObject3D type
+      monster.switchTexture = () => {
         monster.material.map = monster.material.map === textures.monster[item.idle] ? textures.monsteract[item.idle] : textures.monster[item.idle];
         monster.material.needsUpdate = true;
+      };
+      monster.executeAction = (end: () => void, index1: number, index2: number, time = 500) => {
+        monster.switchTexture();
+        const map = monster.material.map;
+        const height = map.source.data.height;
+        const width = map.source.data.width;
+        const factor = 1 / (width / height);
+        map.offset.x = factor * index1;
+
+        executeFrames(() => {
+          map.offset.x += factor;
+        }, () => {
+          monster.switchTexture();
+          end();
+        }, () => {}, index2 - index1, time);
       };
 
       this.objects.push(monster);
@@ -94,7 +112,7 @@ export class Graphics {
       item.obj3d = monster;
     });
 
-
+    window.oaw = monsters;
 
     // TODO is this code run more than it should?
     this.updateID = setInterval(() => Graphics.updateObjectAnimation(), 250);

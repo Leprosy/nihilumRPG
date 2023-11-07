@@ -1,16 +1,15 @@
 import { Game } from "..";
 import { GameConfig } from "../constants/config";
-import { Position2D } from "../types";
+import { Monster3D, Position2D } from "../types";
 import { Actor } from "./Actor";
 import { Dungeon } from "./Dungeon";
 import { Party } from "./Party";
-import { ExtendedObject3D } from "@enable3d/phaser-extension";
 import monsters from "../../assets/monsters.json";
 
 type monsterDefinition = {
   name: string;
-  idle: string;
-  actions: string;
+  idle: number;
+  actions: number;
 }
 
 export class Monster extends Actor {
@@ -18,11 +17,11 @@ export class Monster extends Actor {
   id: number;
   x: number;
   y: number;
-  obj3d: ExtendedObject3D;
+  obj3d: Monster3D;
   groupIndex: number;
   groupCount: number;
-  idle: string;
-  actions: string;
+  idle: number;
+  actions: number;
 
   constructor(x: number, y: number, id: number) {
     super();
@@ -35,7 +34,6 @@ export class Monster extends Actor {
     this.id = id;
     this.groupIndex = 0;
     this.groupCount = 1;
-    console.log("oaw", monsters);
   }
 
   chaseParty(P: Party, dungeon: Dungeon): Position2D {
@@ -49,7 +47,7 @@ export class Monster extends Actor {
     let nx = this.x;
     let ny = this.y;
 
-    if (Math.abs(P.x - nx) + Math.abs(P.y - ny) <= 3) {
+    if (Math.abs(P.x - nx) + Math.abs(P.y - ny) <= 3) { // TODO can we refactor this?
       if (P.a == 0 || P.a == 2) { // Party has N-S orientation
         if (nx == P.x) { // Same position, get near
           ny += (P.y - ny) / Math.abs(P.y - ny);

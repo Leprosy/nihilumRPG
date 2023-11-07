@@ -13,14 +13,14 @@ import { executeFrames } from "../helpers/animation";
 export class Explore extends Scene3D {
   state: GameState;
   lastKey: string;
-  isMoving: boolean;
+  isBlocked: boolean;
   monsters: MonsterManager;
   combatQueue: CombatQueue;
 
   constructor() {
     super("Explore");
     this.lastKey = "";
-    this.isMoving = false;
+    this.isBlocked = false;
     this.monsters = new MonsterManager();
     this.combatQueue = new CombatQueue();
   }
@@ -36,7 +36,8 @@ export class Explore extends Scene3D {
 
     // Events
     this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
-      if (!this.isMoving) {
+      console.log("OAw is blocked", this.isBlocked);
+      if (!this.isBlocked) {
         this.lastKey = event.key;
 
         switch (this.state.status) {
@@ -80,7 +81,7 @@ export class Explore extends Scene3D {
 
   updateScene() {
     console.log("Explore.updateScene", this.state.party);
-    this.isMoving = true;
+    this.isBlocked = true;
     const camera = this.third.camera;
     const size = GameConfig.gridSize;
     const resolution = 5;
@@ -95,7 +96,7 @@ export class Explore extends Scene3D {
       Graphics.rotateFix();
     }, () => {
       camera.position.set(backward.x * size, size / 2, backward.y * size);
-      this.isMoving = false;
+      this.isBlocked = false;
       Graphics.rotateFix();
     }, () => {
       camera.lookAt(this.state.party.x * size, size / 2, this.state.party.y * size);
@@ -114,15 +115,23 @@ export class Explore extends Scene3D {
   }
 
   doNextCombatAction() {
-    let actor: Actor;
+    this.isBlocked = true;
+    const actor = this.combatQueue.getNextActor();
 
-    while ((actor = this.combatQueue.getNextActor()) instanceof Monster) {
+    if (actor instanceof Monster) {
       console.log("Explore.doNextCombatAction: Monster action executed", actor);
+
+      actor.obj3d.executeAction(() => {
+        console.log("OAW!", this);
+        this.doNextCombatAction();
+      }, 0, 2, 3000);
+      //return;
+    } else {
+      console.log("Explore.doNextCombatAction: Party action", actor);
+      this.isBlocked = false;
+      this.state.status = GameStatus.FightingChoice;
       this.moveMonsters();
     }
-
-    console.log("Explore.doNextCombatAction: Party action", actor);
-    this.state.status = GameStatus.FightingChoice;
   }
 
 
