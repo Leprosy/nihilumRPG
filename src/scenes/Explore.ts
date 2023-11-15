@@ -109,6 +109,7 @@ export class Explore extends Scene3D {
     if (this.monsters.isFighting(party)) {
       this.combatQueue.pushActors(this.monsters.getMonstersAt(party as Position2D));
       if (this.state.status === GameStatus.Exploring) this.doNextCombatAction(); // first time, do the action as soon as possible
+      console.log(">>");
       this.state.status = GameStatus.Fighting;
     }
   }
@@ -126,8 +127,8 @@ export class Explore extends Scene3D {
     } else {
       console.log("Explore.doNextCombatAction: Party action", actor);
       this.isBlocked = false;
-      this.state.status = GameStatus.FightingChoice;
       this.moveMonsters();
+      this.state.status = GameStatus.FightingChoice;
     }
   }
 
