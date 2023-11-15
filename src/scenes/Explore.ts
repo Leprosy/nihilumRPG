@@ -6,7 +6,6 @@ import { Graphics } from "../helpers/Graphics";
 import { GameConfig } from "../constants/config";
 import { MonsterManager } from "../entities/MonsterManager";
 import { CombatQueue } from "../helpers/CombatQueue";
-import { Actor } from "../entities/Actor";
 import { Monster } from "../entities/Monster";
 import { executeFrames } from "../helpers/animation";
 
@@ -36,29 +35,27 @@ export class Explore extends Scene3D {
 
     // Events
     this.input.keyboard.on("keydown", (event: KeyboardEvent) => {
-      console.log("OAw is blocked", this.isBlocked);
       if (!this.isBlocked) {
+        this.isBlocked = true;
         this.lastKey = event.key;
 
         switch (this.state.status) {
           case GameStatus.Exploring:
             this.moveParty(event);
-            this.updateScene();
             break;
 
           case GameStatus.Script:
           case GameStatus.ScriptChoice:
             ScriptRunner.next({ lastKey: this.lastKey });
+            this.isBlocked = false;
             break;
 
           case GameStatus.Fighting:
             this.fightParty(event);
-            this.updateScene();
             break;
 
           case GameStatus.FightingChoice:
             this.fightChoiceParty(event);
-            this.updateScene();
             break;
         }
       }
@@ -66,7 +63,7 @@ export class Explore extends Scene3D {
 
     EventManager.on(GameEvents.UpdateView, () => {
       this.generateMap();
-      this.updateScene();
+      this.updateCamera();
     });
 
     // 3d scene and go
@@ -79,9 +76,8 @@ export class Explore extends Scene3D {
     Graphics.renderMap(this.state.dungeon, this.monsters);
   }
 
-  updateScene() {
-    console.log("Explore.updateScene", this.state.party);
-    this.isBlocked = true;
+  updateCamera(cb?: () => {}) {
+    console.log("Explore.updateCamera", this.state.party);
     const camera = this.third.camera;
     const size = GameConfig.gridSize;
     const resolution = 5;
@@ -96,8 +92,11 @@ export class Explore extends Scene3D {
       Graphics.rotateFix();
     }, () => {
       camera.position.set(backward.x * size, size / 2, backward.y * size);
-      this.isBlocked = false;
       Graphics.rotateFix();
+
+      if (cb !== undefined) {
+        cb();
+      }
     }, () => {
       camera.lookAt(this.state.party.x * size, size / 2, this.state.party.y * size);
     }, resolution, 100);
@@ -110,7 +109,7 @@ export class Explore extends Scene3D {
     if (this.monsters.isFighting(party)) {
       this.combatQueue.pushActors(this.monsters.getMonstersAt(party as Position2D));
       if (this.state.status === GameStatus.Exploring) this.doNextCombatAction(); // first time, do the action as soon as possible
-      this.state.status =  GameStatus.Fighting;
+      this.state.status = GameStatus.Fighting;
     }
   }
 
@@ -122,10 +121,8 @@ export class Explore extends Scene3D {
       console.log("Explore.doNextCombatAction: Monster action executed", actor);
 
       actor.obj3d.executeAction(() => {
-        console.log("OAW!", this);
         this.doNextCombatAction();
-      }, 0, 2, 3000);
-      //return;
+      }, 0, 2, 500);
     } else {
       console.log("Explore.doNextCombatAction: Party action", actor);
       this.isBlocked = false;
@@ -147,12 +144,14 @@ export class Explore extends Scene3D {
         party.turnLeft();
         Graphics.rotateFix();
         this.monsters.updateMonsters3dObjects();
+        this.updateCamera(() => this.isBlocked = false);
         break;
 
       case "d":
         party.turnRight();
         Graphics.rotateFix();
         this.monsters.updateMonsters3dObjects();
+        this.updateCamera(() => this.isBlocked = false);
         break;
 
       case " ":
@@ -163,6 +162,7 @@ export class Explore extends Scene3D {
 
       default:
         console.log("Explore.fightChoiceParty: Unregistered key", event);
+        this.isBlocked = false;
         break;
     }
   }
@@ -175,12 +175,14 @@ export class Explore extends Scene3D {
         party.turnLeft();
         Graphics.rotateFix();
         this.monsters.updateMonsters3dObjects();
+        this.updateCamera(() => this.isBlocked = false);
         break;
 
       case "d":
         party.turnRight();
         Graphics.rotateFix();
         this.monsters.updateMonsters3dObjects();
+        this.updateCamera(() => this.isBlocked = false);
         break;
 
       case " ":
@@ -189,6 +191,7 @@ export class Explore extends Scene3D {
 
       default:
         console.log("Explore.fightParty: Unregistered key", event);
+        this.isBlocked = false;
         break;
     }
   }
@@ -238,6 +241,8 @@ export class Explore extends Scene3D {
         console.log("Explore.moveParty: Unregistered key", event);
         break;
     }
+
+    this.updateCamera(() => this.isBlocked = false);
   }
 
   update() {}
