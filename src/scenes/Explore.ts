@@ -76,7 +76,7 @@ export class Explore extends Scene3D {
     Graphics.renderMap(this.state.dungeon, this.monsters);
   }
 
-  updateCamera(cb?: () => {}) {
+  updateCamera(cb?: () => void) {
     console.log("Explore.updateCamera", this.state.party);
     const camera = this.third.camera;
     const size = GameConfig.gridSize;
