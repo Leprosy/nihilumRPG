@@ -1,34 +1,15 @@
-import Phaser from "phaser";
-import { enable3d, Canvas } from "@enable3d/phaser-extension";
-import { Main, Explore, Load } from "./scenes/";
-import { GameConfig } from "./constants/config";
+/* import { GameConfig } from "./nihilum/const/config";
+import { renderDungeon } from "./nihilum/helpers/Graphics";
+*/
 
-export let Game: Phaser.Game;
+import { Nihilum } from "./nihilum";
 
-class SimpleGame {
-  constructor() {
-    const config: Phaser.Types.Core.GameConfig = {
-      type: Phaser.WEBGL,
-      transparent: true,
-      width: GameConfig.width,
-      height: GameConfig.height,
-      scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
-      },
-      parent: "content",
-      scene: [Main, Explore, Load],
-      title: GameConfig.name,
-      version: GameConfig.version,
-      ...Canvas()
-    };
+const main = async () => {
+  const Game = new Nihilum({});
+  // await Game.loadState("data/state.json");
+  console.log("OAW!", Game);
 
-    enable3d(() => {
-      Game = new Phaser.Game(config);
-    });
-  }
-}
-
-window.onload = () => {
-  new SimpleGame();
+  Game.start();
 };
+
+main();

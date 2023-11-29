@@ -1,0 +1,5 @@
+{
+    "dungeon": "map0",
+    "party": ["actor0", "actor1"],
+    "quests": ["quest0", "quest1"]
+}

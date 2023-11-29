@@ -1,3 +1,4 @@
+// FIXME LoadAssets and LoadMap scenes
 import { Scene3D, THREE } from "@enable3d/phaser-extension";
 import { Party } from "../entities/Party";
 import { Actor } from "../entities/Actor";
@@ -28,14 +29,18 @@ export class Load extends Scene3D {
       party: new Party([new Actor()]),
       dungeon: new Dungeon(),
       quests: new QuestManager(),
-      status: GameStatus.Exploring
+      status: GameStatus.Exploring,
     };
 
     // Loading 3d assets
     const keyMap = {
-      "floor": "/assets/img/textures/", "wall": "/assets/img/textures/",
-      "ceiling": "/assets/img/textures/", "sky": "/assets/img/textures/",
-      "monster": "/assets/img/monsters/", "monsteract": "/assets/img/monsters/", "object": "/assets/img/objects/"
+      floor: "/assets/img/textures/",
+      wall: "/assets/img/textures/",
+      ceiling: "/assets/img/textures/",
+      sky: "/assets/img/textures/",
+      monster: "/assets/img/monsters/",
+      monsteract: "/assets/img/monsters/",
+      object: "/assets/img/objects/",
     };
     const animatedKeys = ["monster", "monsteract", "object"];
     const keys = Object.keys(keyMap);
@@ -53,9 +58,11 @@ export class Load extends Scene3D {
 
         const result: Texture | unknown = await Promise.race([
           this.third.load.texture(txtName),
-          new Promise((res) => setTimeout(() => {
-            res(undefined);
-          }, 100))
+          new Promise((res) =>
+            setTimeout(() => {
+              res(undefined);
+            }, 100)
+          ),
         ]);
 
         if (!result) {
@@ -86,11 +93,14 @@ export class Load extends Scene3D {
     // Done
     this.registry.set("state", state);
     this.registry.set("textures", textures);
-    this.loadMap({ startPoint: 0, dungeon: "map0", call: () => {
-      this.scene.start("Explore");
-    } }); // TODO: extract this data from saved game?
+    this.loadMap({
+      startPoint: 0,
+      dungeon: "map0",
+      call: () => {
+        this.scene.start("Main");
+      },
+    }); // TODO: extract this data from saved game?
   }
-
 
   /*
    * Loads a Map from a json file
@@ -98,7 +108,8 @@ export class Load extends Scene3D {
   loadMap(args: loadMapArgs) {
     console.log("Load.loadMap: loadMap/is ready", this.load.isReady(), args);
 
-    if (!this.load.isReady()) { // TODO this loader thing is weird...why we need to reset and load again
+    if (!this.load.isReady()) {
+      // TODO this loader thing is weird...why we need to reset and load again
       setTimeout(() => {
         console.log("Load.loadMap: retrying", args);
         this.load.reset();
@@ -123,8 +134,9 @@ export class Load extends Scene3D {
   }
 }
 
-export type loadMapArgs = { // TODO import this from scriptrunner?
+export type loadMapArgs = {
+  // TODO import this from scriptrunner?
   startPoint: number;
   dungeon: string;
   call: () => void;
-}
+};
