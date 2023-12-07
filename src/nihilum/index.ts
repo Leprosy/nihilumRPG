@@ -1,33 +1,42 @@
 import { Graphics } from "./helpers/Graphics";
-import { Logger } from "./helpers/Logger";
-import { StateManager } from "./helpers/StateManager";
+import { Loader } from "./helpers/Loader";
+import { Scenes } from "./helpers/Scenes";
+import { State } from "./helpers/State";
+import { Another } from "./scenes/Another";
+import { Main } from "./scenes/Main";
 
 type NihilumConfig = {
   rootElement: string;
-}
+};
 
 export class Nihilum {
-  private rootElement: Element;
-  state: StateManager;
-
   constructor(config: NihilumConfig) {
-    Logger.log("NihilumRPG", "init");
+    console.log("Nihilum: starting engine");
 
-    this.rootElement = document.querySelector(config.rootElement);
+    const rootElement = document.querySelector(config.rootElement);
 
-    // Load assets
-
-
-    // Init graphics
-    Graphics.renderDungeon(this.rootElement);
+    if (!rootElement) {
+      console.error(`Nihilum: undefined canvas rootElement: ${rootElement}`);
+      return;
+    }
 
     // Init state
-    this.state = new StateManager();
+    State.init();
 
-    // Init something else?
-  }
+    // Init graphics
+    Graphics.init(rootElement);
 
-  start() {
-    Logger.log("NihilumRPG: ");
+    // Load assets and start
+    Loader.loadTextures().then(() => {
+      // We are ready
+      console.log("Nihilum: engine ready");
+
+      // Custom code starts here
+
+      // Scenes
+      Scenes.add("main", new Main());
+      Scenes.add("another", new Another());
+      Scenes.start("main");
+    });
   }
 }
