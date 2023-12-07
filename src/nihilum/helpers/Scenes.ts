@@ -2,10 +2,11 @@ export class Scenes {
   private static scenes = {};
   private static active: Scene;
 
-  static add(name: string, scene: Scene) {
+  static add(name: string, scene: new () => Scene) {
     if (!this.scenes[name]) {
-      this.scenes[name] = scene;
-      scene.create();
+      const instance = new scene();
+      this.scenes[name] = instance;
+      instance.create();
     }
   }
 
@@ -18,6 +19,8 @@ export class Scenes {
       if (this.active) this.active.stop();
       this.active = this.scenes[name];
       this.active.start();
+    } else {
+      console.error(`Scenes.start: Scene '${name}' not found`);
     }
   }
 }

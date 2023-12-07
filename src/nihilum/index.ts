@@ -2,8 +2,8 @@ import { Graphics } from "./helpers/Graphics";
 import { Loader } from "./helpers/Loader";
 import { Scenes } from "./helpers/Scenes";
 import { State } from "./helpers/State";
-import { Another } from "./scenes/Another";
-import { Main } from "./scenes/Main";
+import { LoadGame } from "./scenes/LoadGame";
+import { Main } from "./scenes/MainMenu";
 
 type NihilumConfig = {
   rootElement: string;
@@ -31,12 +31,12 @@ export class Nihilum {
       // We are ready
       console.log("Nihilum: engine ready");
 
-      // Custom code starts here
-
-      // Scenes
-      Scenes.add("main", new Main());
-      Scenes.add("another", new Another());
-      Scenes.start("main");
+      /**
+       *  GAME CODE STARTS HERE
+       */
+      Scenes.add("mainMenu", Main);
+      Scenes.add("loadGame", LoadGame);
+      Scenes.start("mainMenu");
     });
   }
 }
